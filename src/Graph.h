@@ -4,7 +4,10 @@
 
 class Graph {
     public:
-    Graph(const std::string& filename_nodes, const std::string& filename_edges);
+    Graph(const std::string& filename_nodes, const std::string& filename_edges, int total_nodes);
+
+    void print_graph();
+    void print_predecessors();
 
 
     private:
@@ -18,5 +21,8 @@ class Graph {
         double distance;
     };
 
-    std::map<Node, std::vector<Connection>> graph;
+    void print(const std::vector<std::vector<Node*>>& graph);
+
+    std::vector<std::vector<Node*>> graph_;
+    std::vector<std::vector<int>> predecessor_;
 };
