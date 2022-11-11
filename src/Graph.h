@@ -28,3 +28,4 @@ class Graph {
     std::vector<std::vector<Node*>> graph_;
     std::vector<std::vector<int>> predecessor_;
 };
+
