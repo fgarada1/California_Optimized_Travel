@@ -16,7 +16,7 @@ Graph::Graph(const std::string& filename_nodes, const std::string& filename_edge
         throw std::invalid_argument("File could not be read"); //not sure about this one
     }
 
-    std::string id;
+    int id;
     std::string latitude;
     std::string longitude;
     int count = 0;
@@ -34,7 +34,7 @@ Graph::Graph(const std::string& filename_nodes, const std::string& filename_edge
         }
 
         std::cout << id << " " << latitude << " " << longitude << std::endl;
-        int id2 = std::stoi(id);
+        int id2 = id; //used to convert from std::string to int previously
         Node node{id2, std::stod(latitude), std::stod(longitude)}; //this guarantees higher precision for the doubles
         try {
             graph_.at(id2).at(id2) = &node;
@@ -80,8 +80,13 @@ void Graph::print_graph() {
     std::cout << '\n' << std::endl;
     for (std::vector<Node*> vect : graph_) {
         for (Node* node_ptr : vect) {
-    //         std::cout << node_ptr->id << " ";
+            if (node_ptr != nullptr) {
+                std::cout << node_ptr->id << "\t";
+            } else {
+                std::cout << "null\t";
+            }
         }
+        std::cout << '\n' << std::endl;
     }
     std::cout << std::endl;
 }
@@ -89,7 +94,7 @@ void Graph::print_predecessors() {
     std::cout << '\n' << std::endl;
     for (std::vector<int> vect : predecessor_) {
         for (int num : vect) {
-            std::cout << num << " ";
+            std::cout << num << "\t";
         }
         std::cout << '\n' << std::endl;
     }
