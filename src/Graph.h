@@ -9,10 +9,12 @@ class Graph {
     void print_graph();
     void print_predecessors();
 
+    ~Graph();
+
 
     private:
     struct Node {
-        int id;
+        unsigned id;
         double latitude;
         double longitude;
     };
