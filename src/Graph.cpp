@@ -16,7 +16,7 @@ Graph::Graph(const std::string& filename_nodes, const std::string& filename_edge
         throw std::invalid_argument("File could not be read"); //not sure about this one
     }
 
-    int id;
+    unsigned id;
     std::string latitude;
     std::string longitude;
     int count = 0;
@@ -34,10 +34,11 @@ Graph::Graph(const std::string& filename_nodes, const std::string& filename_edge
         }
 
         std::cout << id << " " << latitude << " " << longitude << std::endl;
-        int id2 = id; //used to convert from std::string to int previously
-        Node node{id2, std::stod(latitude), std::stod(longitude)}; //this guarantees higher precision for the doubles
+        unsigned id2 = id; //used to convert from std::string to int previously
+        Node* node = new Node{id2, std::stod(latitude), std::stod(longitude)}; //this guarantees higher precision for the doubles
+            //also without new the first Node id wraps around to the max value, it goes wrong somehow, so this is the solution for now
         try {
-            graph_.at(id2).at(id2) = &node;
+            graph_.at(id2).at(id2) = node;
             predecessor_.at(id2).at(id2) = id2;
         } catch (std::exception& e) {
             throw std::invalid_argument("total_nodes is fewer than the number of nodes provided: "
@@ -74,6 +75,14 @@ Graph::Graph(const std::string& filename_nodes, const std::string& filename_edge
     while (std::getline(ifs_edges, input2)) {
     }
 
+}
+
+Graph::~Graph() {
+    for (std::vector<Node*> vect : graph_) {
+        for (Node* node_ptr : vect) {
+            delete node_ptr;
+        }
+    }
 }
 
 void Graph::print_graph() {
