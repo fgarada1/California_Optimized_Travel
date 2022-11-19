@@ -8,6 +8,7 @@
 Graph::Graph(const std::string& filename_nodes, const std::string& filename_edges, unsigned total_nodes, unsigned total_edges) 
 : graph_(total_nodes, std::vector<double>(total_nodes, -1)), 
     predecessor_(total_nodes, std::vector<unsigned>(total_nodes, -1)), 
+    nodes_(total_nodes, nullptr), 
     total_nodes_(total_nodes), total_edges_(total_edges) {
 
     //read nodes
@@ -43,6 +44,9 @@ Graph::Graph(const std::string& filename_nodes, const std::string& filename_edge
         unsigned id2 = id; //used to convert from std::string to int previously
         Node* node = new Node{id2, std::stod(latitude), std::stod(longitude)}; //this guarantees higher precision for the doubles
             //also without new the first Node id wraps around to the max value, it goes wrong somehow, so this is the solution for now
+        assert(nodes_.at(id2) == nullptr);
+        nodes_.at(id2) = node;
+
         try {
             graph_.at(id2).at(id2) = 0;
             predecessor_.at(id2).at(id2) = id2;
@@ -168,6 +172,18 @@ void Graph::print_predecessors() {
             std::cout << predecessor << " ";
         }
         std::cout << '\n' << std::endl;
+    }
+    std::cout << std::endl;
+}
+
+void Graph::print_nodes() {
+    std::cout << '\n' << std::endl;
+    for (Node* node : nodes_) {
+        if (node != nullptr) {
+            std::cout << "[" << node->longitude << " " << node->longitude << "] ";
+        } else {
+            std::cout << "null ";
+        }
     }
     std::cout << std::endl;
 }
