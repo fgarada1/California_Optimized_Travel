@@ -7,21 +7,21 @@ TEST_CASE("TEST_NAME", "[tag]") {
     REQUIRE((1 + 1) == 2);
 }
 
-SECTION("Input file checking for constructor") {
-    SECTION("test nodes") {
+// SECTION("Input file checking for constructor") {
+    // SECTION("test nodes") {
         //modify the file "../test_nodes.txt" to check for format errors,
         //once for all parameters on line 0
         //once for all parameters on line 1
         //once for all parameters on some set of random but predetermined lines
 
-    }
-    SECTION("test edges") {
+    // }
+    // SECTION("test edges") {
         //modify the file "../test_edges.txt" to check for format errors,
         //once for all parameters on line 0
         //once for all parameters on line 1
         //once for all parameters on some random set of predetermined lines
 
-    }
+    // }
     //inputing the name for file 1 incorrectly
     //inputing the name for file 2 incorrectly
     //inputing the name for both file 1 and file 2 incorrectly
@@ -44,7 +44,7 @@ SECTION("Input file checking for constructor") {
     //check "../example_edges3.txt" has no issues
 
     //check that each mamber variable is initialized properly
-}
+// }
 
 //need to add
 //constructor vector no nodes are null

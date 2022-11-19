@@ -84,7 +84,7 @@ Graph::Graph(const std::string& filename_nodes, const std::string& filename_edge
         throw std::invalid_argument("File 2 could not be read"); //not sure about this one
     }
 
-    //read through all of the lines in the edgess txt file
+    //read through all of the lines in the edges txt file
     unsigned count2 = 0;
     while (ifs_edges.good() && count2 < total_edges_) {
         unsigned id_edge;
@@ -114,7 +114,6 @@ Graph::Graph(const std::string& filename_nodes, const std::string& filename_edge
             graph_.at(id_from).at(id_to) = std::stod(distance);
             predecessor_.at(id_from).at(id_to) = id_from; //not sure if this is the correct thing to do here, based on ? floyd-warshall's algorithm
         } catch (std::exception& e) {
-            //these should go before the try catch, but then the code does not work for some reason
             if (id_from >= total_nodes) {
                 throw std::invalid_argument("id_from: " + std::to_string(id_from) + " on line: " + std::to_string(count2) + " out of range of total_nodes_: " + std::to_string(total_nodes_));
             }
@@ -149,6 +148,9 @@ Graph::~Graph() {
     //         delete predecessor_.at(i).at(j);
     //     }
     // }
+    for (Node* node : nodes_) {
+       delete node;
+    }
 }
 
 void Graph::print_graph() {
