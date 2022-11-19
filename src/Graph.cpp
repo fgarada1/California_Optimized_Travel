@@ -8,6 +8,7 @@
 Graph::Graph(const std::string& filename_nodes, const std::string& filename_edges, unsigned total_nodes, unsigned total_edges) 
 : graph_(total_nodes, std::vector<double>(total_nodes, -1)), 
     predecessor_(total_nodes, std::vector<unsigned>(total_nodes, -1)), 
+    nodes_(total_nodes, nullptr), 
     total_nodes_(total_nodes), total_edges_(total_edges) {
 
     //read nodes
@@ -43,12 +44,15 @@ Graph::Graph(const std::string& filename_nodes, const std::string& filename_edge
         unsigned id2 = id; //used to convert from std::string to int previously
         Node* node = new Node{id2, std::stod(latitude), std::stod(longitude)}; //this guarantees higher precision for the doubles
             //also without new the first Node id wraps around to the max value, it goes wrong somehow, so this is the solution for now
+        assert(nodes_.at(id2) == nullptr);
+        nodes_.at(id2) = node;
+
         try {
             graph_.at(id2).at(id2) = 0;
             predecessor_.at(id2).at(id2) = id2;
         } catch (std::exception& e) {
             if (id2 >= total_nodes) {
-                throw std::invalid_argument("given id: " + std::to_string(id2) + " out of range of total_nodes_: " + std::to_string(total_nodes_));
+                throw std::invalid_argument("given id: " + std::to_string(id2) + " on line: " + std::to_string(count) + " out of range of total_nodes_: " + std::to_string(total_nodes_));
             }
             throw std::invalid_argument("total_nodes_ is fewer than the number of nodes provided: "
                                                                     + std::to_string(total_nodes_));
@@ -112,7 +116,7 @@ Graph::Graph(const std::string& filename_nodes, const std::string& filename_edge
         } catch (std::exception& e) {
             //these should go before the try catch, but then the code does not work for some reason
             if (id_from >= total_nodes) {
-                throw std::invalid_argument("id_from: " + std::to_string(id_from) + " out of range of total_nodes_: " + std::to_string(total_nodes_));
+                throw std::invalid_argument("id_from: " + std::to_string(id_from) + " on line: " + std::to_string(count2) + " out of range of total_nodes_: " + std::to_string(total_nodes_));
             }
             if (id_to >= total_nodes) {
                 throw std::invalid_argument("id_to: " + std::to_string(id_to) + " out of range of total_nodes_: " + std::to_string(total_nodes_));
@@ -152,7 +156,7 @@ void Graph::print_graph() {
     for (const std::vector<double>& vect : graph_) {
         for (double distance : vect) {
             // if (node_ptr != -1) {
-                std::cout << distance << "\t";
+                std::cout << distance << " ";
             // } else {
             //     std::cout << "null\t";
             // }
@@ -165,9 +169,21 @@ void Graph::print_predecessors() {
     std::cout << '\n' << std::endl;
     for (const std::vector<unsigned>& vect : predecessor_) {
         for (unsigned predecessor : vect) {
-            std::cout << predecessor << "\t";
+            std::cout << predecessor << " ";
         }
         std::cout << '\n' << std::endl;
+    }
+    std::cout << std::endl;
+}
+
+void Graph::print_nodes() {
+    std::cout << '\n' << std::endl;
+    for (Node* node : nodes_) {
+        if (node != nullptr) {
+            std::cout << "[" << node->longitude << " " << node->longitude << "] ";
+        } else {
+            std::cout << "null ";
+        }
     }
     std::cout << std::endl;
 }
