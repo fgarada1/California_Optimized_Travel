@@ -11,6 +11,8 @@ class Graph {
     void print_graph();
     //prints the contents of predecesor_, for use in floyd_warshall's algorithm
     void print_predecessors();
+    //prints the contents of nodes_, for use in the A* algorithm
+    void print_nodes();
 
     //deconstructor for all member variables in the graph, deletes new nodes (if there are any being used in the current graph)
     ~Graph();
@@ -39,7 +41,7 @@ class Graph {
     std::vector<std::vector<double>> heuristic_; //(based on total geographical distance between nodes, direction does not matter here)
 
     //vector (of nodes)
-    std::vector<Node> nodes_; //vector of nodes stored to calculate the heuristic storing adjacency matrix for the A* algorithm
+    std::vector<Node*> nodes_; //vector of nodes stored to calculate the heuristic storing adjacency matrix for the A* algorithm
 
     unsigned total_nodes_;
     unsigned total_edges_;
