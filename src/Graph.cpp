@@ -4,10 +4,12 @@
 #include <cassert>
 #include <stdexcept>
 #include <sstream>
+#include <cmath>
 
 Graph::Graph(const std::string& filename_nodes, const std::string& filename_edges, unsigned total_nodes, unsigned total_edges) 
 : graph_(total_nodes, std::vector<double>(total_nodes, -1)), 
     predecessor_(total_nodes, std::vector<unsigned>(total_nodes, -1)), 
+    heuristic_(total_nodes, std::vector<double>(total_nodes, -1)), 
     nodes_(total_nodes, nullptr), 
     total_nodes_(total_nodes), total_edges_(total_edges) {
 
@@ -139,6 +141,8 @@ Graph::Graph(const std::string& filename_nodes, const std::string& filename_edge
                              + std::to_string(count2) + " total_edges_: " + std::to_string(total_edges_));
     }
 
+    compute_heuristic_adjacency_matrix();
+    floyd_warshall_ = graph_; //this is a copy, not a reference to graph_
 }
 
 Graph::~Graph() {
@@ -153,19 +157,35 @@ Graph::~Graph() {
     }
 }
 
-void Graph::print_graph() {
-    std::cout << '\n' << std::endl;
-    for (const std::vector<double>& vect : graph_) {
-        for (double distance : vect) {
-            // if (node_ptr != -1) {
-                std::cout << distance << " ";
-            // } else {
-            //     std::cout << "null\t";
-            // }
+void Graph::compute_heuristic_adjacency_matrix() {
+    assert(nodes_.size() == total_nodes_);
+    assert(heuristic_.size() == total_nodes_);
+    //could assert that each row exists and has size == total_nodes, but this could be unneccessary and make compile time longer
+    for (size_t i = 0; i < total_nodes_; i++) {
+        for (size_t j = i; j < total_nodes_; j++) {
+            double distance = haversine(nodes_.at(i), nodes_.at(j));
+            heuristic_.at(i).at(j) = distance;
+            heuristic_.at(j).at(i) = distance;
         }
-        std::cout << '\n' << std::endl;
     }
-    std::cout << std::endl;
+}
+
+
+double Graph::haversine(Node* node1, Node* node2) {
+    double delta_longitude = abs(node1->longitude - node2->longitude);
+    double delta_latitude = abs(node1->latitude - node2->latitude);
+
+    return -1;
+}
+
+
+void Graph::compute_floyd_warshall() {
+
+}
+
+
+void Graph::print_graph() {
+    this->print(graph_);
 }
 void Graph::print_predecessors() {
     std::cout << '\n' << std::endl;
@@ -190,12 +210,25 @@ void Graph::print_nodes() {
     std::cout << std::endl;
 }
 
-void Graph::print(const std::vector<std::vector<Node*>>& graph) {
+void Graph::print_floyd_warshall() {
+    this->print(floyd_warshall_);
+}
+
+void Graph::print_heuristic() {
+    this->print(heuristic_);
+}
+
+void Graph::print(const std::vector<std::vector<double>>& graph) {
     std::cout << '\n' << std::endl;
-    for (std::vector<Node*> vect : graph) {
-        for (Node* node_ptr : vect) {
-    //         std::cout << node_ptr->id << " ";
+    for (const std::vector<double>& vect : graph) {
+        for (double distance : vect) {
+            // if (node_ptr != -1) {
+                std::cout << distance << " ";
+            // } else {
+            //     std::cout << "null\t";
+            // }
         }
+        std::cout << '\n' << std::endl;
     }
     std::cout << std::endl;
 }
