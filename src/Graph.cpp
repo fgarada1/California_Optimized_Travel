@@ -49,13 +49,16 @@ Graph::Graph(const std::string& filename_nodes, const std::string& filename_edge
         assert(nodes_.at(id2) == nullptr);
         nodes_.at(id2) = node;
 
+        if (count != id2) {
+            throw std::invalid_argument("given id: " + std::to_string(id2) + " does not match count: " + std::to_string(count));
+        }
+        if (id2 >= total_nodes) {
+                throw std::invalid_argument("given id: " + std::to_string(id2) + " on line: " + std::to_string(count) + " out of range of total_nodes_: " + std::to_string(total_nodes_));
+        }
         try {
             graph_.at(id2).at(id2) = 0;
             predecessor_.at(id2).at(id2) = id2;
         } catch (std::exception& e) {
-            if (id2 >= total_nodes) {
-                throw std::invalid_argument("given id: " + std::to_string(id2) + " on line: " + std::to_string(count) + " out of range of total_nodes_: " + std::to_string(total_nodes_));
-            }
             throw std::invalid_argument("total_nodes_ is fewer than the number of nodes provided: "
                                                                     + std::to_string(total_nodes_));
         }
@@ -67,11 +70,11 @@ Graph::Graph(const std::string& filename_nodes, const std::string& filename_edge
     ifs_nodes >> test;
     std::cout << test << std::endl;
     if (!ifs_nodes.eof()) {
-        throw std::invalid_argument("total_nodes_ does not match the number of nodes provided: "
-                                "document has extra entries on line: " + std::to_string(count));
+        throw std::invalid_argument("total_nodes_ in document 1 does not match the number of nodes provided: "
+                                "document 1 has extra entries on line: " + std::to_string(count));
     }
     if (count != total_nodes_) {
-        throw std::invalid_argument("total_nodes_ does not match the number of nodes provided: count: " 
+        throw std::invalid_argument("total_nodes_ in document 1 does not match the number of nodes provided: count: " 
                              + std::to_string(count) + " total_nodes_: " + std::to_string(total_nodes_));
     }
 
@@ -94,6 +97,7 @@ Graph::Graph(const std::string& filename_nodes, const std::string& filename_edge
         unsigned id_from;
         std::string distance;
 
+
         ifs_edges >> id_edge;
         if (ifs_edges.good()) {
             ifs_edges >> id_to;
@@ -111,19 +115,25 @@ Graph::Graph(const std::string& filename_nodes, const std::string& filename_edge
             throw std::invalid_argument("Format 2 read error on line: " + std::to_string(count2));
         }
 
-        std::cout << id_edge << " " << id_to << " " << id_from << " " << distance << std::endl;
+        std::cout << id_edge << " " << id_to << " " << id_from << " " << std::stod(distance) << std::endl;
+        if (id_from >= total_nodes) {
+            throw std::invalid_argument("id_from: " + std::to_string(id_from) + " on line: " + std::to_string(count2) + " out of range of total_nodes_: " + std::to_string(total_nodes_));
+        }
+        if (id_to >= total_nodes) {
+            throw std::invalid_argument("id_to: " + std::to_string(id_to) + " out of range of total_nodes_: " + std::to_string(total_nodes_));
+        }
+        if (count2 != id_edge) {
+            throw std::invalid_argument("given edge_id: " + std::to_string(id_edge) + " does not match count2: " + std::to_string(count2) );
+        }
+        if (id_from == id_to) {
+            throw std::invalid_argument("Self loops are not allowed: id_from: " + std::to_string(id_from) + " and id_to: " + std::to_string(id_from) + " on line: " + std::to_string(count2) + " total_nodes:  " + std::to_string(total_nodes_));
+            }
         try {
             graph_.at(id_from).at(id_to) = std::stod(distance);
             predecessor_.at(id_from).at(id_to) = id_from; //not sure if this is the correct thing to do here, based on ? floyd-warshall's algorithm
         } catch (std::exception& e) {
-            if (id_from >= total_nodes) {
-                throw std::invalid_argument("id_from: " + std::to_string(id_from) + " on line: " + std::to_string(count2) + " out of range of total_nodes_: " + std::to_string(total_nodes_));
-            }
-            if (id_to >= total_nodes) {
-                throw std::invalid_argument("id_to: " + std::to_string(id_to) + " out of range of total_nodes_: " + std::to_string(total_nodes_));
-            }
             //
-            throw std::invalid_argument("total_edges_ is fewer than the number of edges provided: "
+            throw std::invalid_argument("total_edges_ in document 2 is fewer than the number of edges provided: "
                                                                     + std::to_string(total_edges_));
         }
         count2++;
@@ -133,11 +143,11 @@ Graph::Graph(const std::string& filename_nodes, const std::string& filename_edge
     ifs_edges >> test2;
     ifs_edges >> test2;
     if (!ifs_edges.eof()) {
-            throw std::invalid_argument("total_edges_ does not match the number of edges provided: "
-                                    "document has extra entries on line: " + std::to_string(count2));
+            throw std::invalid_argument("total_edges_ in document 2 does not match the number of edges provided: "
+                                    "document 2 has extra entries on line: " + std::to_string(count2));
         }
-    if (count2 != total_nodes_) {
-        throw std::invalid_argument("total_edges_ does not match the number of edges provided: count: " 
+    if (count2 != total_edges_) {
+        throw std::invalid_argument("total_edges_ in document 2 does not match the number of edges provided: count2: " 
                              + std::to_string(count2) + " total_edges_: " + std::to_string(total_edges_));
     }
 
@@ -174,6 +184,7 @@ void Graph::compute_heuristic_adjacency_matrix() {
 double Graph::haversine(Node* node1, Node* node2) {
     double delta_longitude = abs(node1->longitude - node2->longitude);
     double delta_latitude = abs(node1->latitude - node2->latitude);
+
 
     return -1;
 }
