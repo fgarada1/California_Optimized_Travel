@@ -56,6 +56,7 @@ Graph::Graph(const std::string& filename_nodes, const std::string& filename_edge
 
         std::cout << id << " " << latitude << " " << longitude << std::endl;
         unsigned id2 = id; //used to convert from std::string to int previously
+
         if (count != id2) {
             throw std::invalid_argument("given id: " + std::to_string(id2) + " does not match count: " + std::to_string(count));
         }
@@ -118,6 +119,7 @@ Graph::Graph(const std::string& filename_nodes, const std::string& filename_edge
         double distance_double;
 
 
+
         ifs_edges >> id_edge;
         if (ifs_edges.good()) {
             ifs_edges >> id_to;
@@ -140,7 +142,9 @@ Graph::Graph(const std::string& filename_nodes, const std::string& filename_edge
             throw std::invalid_argument("Format 2 read error on line: " + std::to_string(count2));
         }
 
+
         std::cout << id_edge << " " << id_to << " " << id_from << " " << distance_double << std::endl;
+        
         if (id_from >= total_nodes) {
             throw std::invalid_argument("id_from: " + std::to_string(id_from) + " on line: " + std::to_string(count2) + " out of range of total_nodes_: " + std::to_string(total_nodes_));
         }
@@ -203,6 +207,25 @@ void Graph::compute_heuristic_adjacency_matrix() {
             heuristic_.at(j).at(i) = distance;
         }
     }
+}
+
+
+double Graph::haversine(Node* node1, Node* node2) {
+    double delta_longitude = abs(node1->longitude - node2->longitude);
+    double delta_latitude = abs(node1->latitude - node2->latitude);
+
+
+    return -1;
+}
+
+
+void Graph::compute_floyd_warshall() {
+
+}
+
+
+void Graph::print_graph() {
+    this->print(graph_);
 }
 
 
@@ -285,6 +308,21 @@ std::string Graph::print(const std::vector<std::vector<double>>& graph) {
             // if (node_ptr != -1) {
                 // std::cout << distance << " ";
                 output += std::to_string(distance) + " ";
+                
+void Graph::print_floyd_warshall() {
+    this->print(floyd_warshall_);
+}
+
+void Graph::print_heuristic() {
+    this->print(heuristic_);
+}
+
+void Graph::print(const std::vector<std::vector<double>>& graph) {
+    std::cout << '\n' << std::endl;
+    for (const std::vector<double>& vect : graph) {
+        for (double distance : vect) {
+            // if (node_ptr != -1) {
+                std::cout << distance << " ";
             // } else {
             //     std::cout << "null\t";
             // }
