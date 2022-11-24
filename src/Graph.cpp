@@ -29,25 +29,33 @@ Graph::Graph(const std::string& filename_nodes, const std::string& filename_edge
         unsigned id;
         std::string latitude;
         std::string longitude;
+        double latitude_double;
+        double longitude_double;
 
         ifs_nodes >> id;
         if (ifs_nodes.good()) {
             ifs_nodes >> latitude;
+            try {
+                latitude_double = std::stod(latitude);
+            } catch (std::exception& e) {
+                throw std::invalid_argument("Format 1 read error on line: " + std::to_string(count));
+            }
         } else {
             throw std::invalid_argument("Format 1 read error on line: " + std::to_string(count));
         }
         if (ifs_nodes.good()) {
             ifs_nodes >> longitude;
+            try {
+                longitude_double = std::stod(longitude);
+            } catch (std::exception& e) {
+                throw std::invalid_argument("Format 1 read error on line: " + std::to_string(count));
+            }
         } else {
             throw std::invalid_argument("Format 1 read error on line: " + std::to_string(count));
         }
 
         std::cout << id << " " << latitude << " " << longitude << std::endl;
         unsigned id2 = id; //used to convert from std::string to int previously
-        Node* node = new Node{id2, std::stod(latitude), std::stod(longitude)}; //this guarantees higher precision for the doubles
-            //also without new the first Node id wraps around to the max value, it goes wrong somehow, so this is the solution for now
-        assert(nodes_.at(id2) == nullptr);
-        nodes_.at(id2) = node;
 
         if (count != id2) {
             throw std::invalid_argument("given id: " + std::to_string(id2) + " does not match count: " + std::to_string(count));
@@ -62,6 +70,18 @@ Graph::Graph(const std::string& filename_nodes, const std::string& filename_edge
             throw std::invalid_argument("total_nodes_ is fewer than the number of nodes provided: "
                                                                     + std::to_string(total_nodes_));
         }
+
+        Node* node = new Node{id2, latitude_double, longitude_double}; //this guarantees higher precision for the doubles
+            //also without new the first Node id wraps around to the max value, it goes wrong somehow, so this is the solution for now
+        assert(nodes_.at(id2) == nullptr);
+        // try {
+        //     if (nodes_.at(id2) == nullptr) {
+        //     }
+        // } catch (std::exception& e) {
+        //     throw std::invalid_argument("given id: " + std::to_string(id2) + " does not match count: " + std::to_string(count));
+        // }
+        nodes_.at(id2) = node;
+        
         count++;
     }
     //check if nodes txt file has extra lines
@@ -96,6 +116,8 @@ Graph::Graph(const std::string& filename_nodes, const std::string& filename_edge
         unsigned id_to;
         unsigned id_from;
         std::string distance;
+        double distance_double;
+
 
 
         ifs_edges >> id_edge;
@@ -111,11 +133,18 @@ Graph::Graph(const std::string& filename_nodes, const std::string& filename_edge
         }
         if (ifs_edges.good()) {
             ifs_edges >> distance;
+            try {
+                distance_double = std::stod(distance);
+            } catch (std::exception& e) {
+                throw std::invalid_argument("Format 2 read error on line: " + std::to_string(count2));
+            }
         } else {
             throw std::invalid_argument("Format 2 read error on line: " + std::to_string(count2));
         }
 
-        std::cout << id_edge << " " << id_to << " " << id_from << " " << std::stod(distance) << std::endl;
+
+        std::cout << id_edge << " " << id_to << " " << id_from << " " << distance_double << std::endl;
+        
         if (id_from >= total_nodes) {
             throw std::invalid_argument("id_from: " + std::to_string(id_from) + " on line: " + std::to_string(count2) + " out of range of total_nodes_: " + std::to_string(total_nodes_));
         }
@@ -129,7 +158,7 @@ Graph::Graph(const std::string& filename_nodes, const std::string& filename_edge
             throw std::invalid_argument("Self loops are not allowed: id_from: " + std::to_string(id_from) + " and id_to: " + std::to_string(id_from) + " on line: " + std::to_string(count2) + " total_nodes:  " + std::to_string(total_nodes_));
             }
         try {
-            graph_.at(id_from).at(id_to) = std::stod(distance);
+            graph_.at(id_from).at(id_to) = distance_double;
             predecessor_.at(id_from).at(id_to) = id_from; //not sure if this is the correct thing to do here, based on ? floyd-warshall's algorithm
         } catch (std::exception& e) {
             //
@@ -198,29 +227,88 @@ void Graph::compute_floyd_warshall() {
 void Graph::print_graph() {
     this->print(graph_);
 }
-void Graph::print_predecessors() {
-    std::cout << '\n' << std::endl;
+
+
+double Graph::haversine(Node* node1, Node* node2) {
+    double delta_longitude = abs(node1->longitude - node2->longitude);
+    double delta_latitude = abs(node1->latitude - node2->latitude);
+
+
+    return -1;
+}
+
+
+void Graph::compute_floyd_warshall() {
+
+}
+
+//getters
+std::vector<std::vector<double>> Graph::get_graph() const { return graph_; }
+std::vector<std::vector<unsigned>> Graph::get_predecessor() const { return predecessor_; }
+std::vector<std::vector<double>> Graph::get_floyd_warshall() const { return floyd_warshall_; }
+std::vector<std::vector<double>> Graph::get_heuristic() const { return heuristic_; }
+std::vector<Node*> Graph::get_nodes() const { return nodes_; }
+
+unsigned Graph::get_total_nodes() const { return total_nodes_; }
+unsigned Graph::get_total_edges() const { return total_edges_; }
+
+
+std::string Graph::print_graph() {
+    return this->print(graph_);
+}
+std::string Graph::print_predecessors() {
+    std::string output;
+    // std::cout << '\n' << std::endl;
+    // output += '\n';
     for (const std::vector<unsigned>& vect : predecessor_) {
         for (unsigned predecessor : vect) {
-            std::cout << predecessor << " ";
+            // std::cout << predecessor << " ";
+            output += std::to_string(predecessor) + " ";
         }
-        std::cout << '\n' << std::endl;
+        // std::cout << '\n' << std::endl;
+        output += '\n';
     }
-    std::cout << std::endl;
+    // std::cout << std::endl;
+    // output += '\n';
+    return output;
 }
 
-void Graph::print_nodes() {
-    std::cout << '\n' << std::endl;
+std::string Graph::print_nodes() {
+    std::string output;
+    // std::cout << '\n' << std::endl;
+    // output += '\n';
     for (Node* node : nodes_) {
         if (node != nullptr) {
-            std::cout << "[" << node->longitude << " " << node->longitude << "] ";
+            // std::cout << "[" << node->longitude << " " << node->longitude << "] ";
+            output += "[" + std::to_string(node->longitude) + " " + std::to_string(node->latitude) + "] ";
         } else {
-            std::cout << "null ";
+            // std::cout << "null ";
+            output += "null ";
         }
     }
-    std::cout << std::endl;
+    // std::cout << std::endl;
+    // output += '\n';
+    return output;
 }
 
+std::string Graph::print_floyd_warshall() {
+    return this->print(floyd_warshall_);
+}
+
+std::string Graph::print_heuristic() {
+    return this->print(heuristic_);
+}
+
+std::string Graph::print(const std::vector<std::vector<double>>& graph) {
+    std::string output;
+    // std::cout << '\n' << std::endl;
+    // output += '\n';
+    for (const std::vector<double>& vect : graph) {
+        for (double distance : vect) {
+            // if (node_ptr != -1) {
+                // std::cout << distance << " ";
+                output += std::to_string(distance) + " ";
+                
 void Graph::print_floyd_warshall() {
     this->print(floyd_warshall_);
 }
@@ -239,7 +327,18 @@ void Graph::print(const std::vector<std::vector<double>>& graph) {
             //     std::cout << "null\t";
             // }
         }
-        std::cout << '\n' << std::endl;
+        // std::cout << '\n' << std::endl;
+        output += '\n';
     }
-    std::cout << std::endl;
+    // std::cout << std::endl;
+    // output += '\n';
+    return output;
+}
+
+void Graph::print_all_vars() {
+    std::cout << "\ngraph_\n" << this->print_graph() << std::endl;
+    std::cout << "\npredecessor_\n" << this->print_predecessors() << std::endl;
+    std::cout << "\nheuristic_\n" << this->print_heuristic() << std::endl;
+    std::cout << "\nfloyd_warshall_\n" << this->print_floyd_warshall() << std::endl;
+    std::cout << "\nnodes_\n" << this->print_nodes() << std::endl;
 }
