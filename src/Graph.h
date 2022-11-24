@@ -2,35 +2,65 @@
 #include <string>
 #include <map>
 
+struct Node {
+    unsigned id;
+    double latitude;
+    double longitude;
+};
+struct Connection {
+    unsigned id_from;
+    unsigned id_to;
+    double distance;
+};
+
 class Graph {
     public:
     //initalizes all member variables, does not apply any algorithms except for the heuristic for the A* algorithm
     Graph(const std::string& filename_nodes, const std::string& filename_edges, unsigned total_nodes, unsigned total_edges);
-
+    
     //prints the adjacency matrix for graph_ (the adjacancy matrix representation of the road network)
-    void print_graph();
+    std::string print_graph();
     //prints the contents of predecesor_, for use in floyd_warshall's algorithm
-    void print_predecessors();
+    std::string print_predecessors();
     //prints the contents of nodes_, for use in the A* algorithm
-    void print_nodes();
+    std::string print_nodes();
+    //prints the contents of floyd_warshall_, the result of the floyd warshall's algorithm
+    std::string print_floyd_warshall();
+    //prints the contents of heuristic_, for use in the A* algorithm
+    std::string print_heuristic();
+
+    //prints information about all member variables of the graph object
+    void print_all_vars();
 
     //deconstructor for all member variables in the graph, deletes new nodes (if there are any being used in the current graph)
     ~Graph();
 
+    //getters
+    std::vector<std::vector<double>> get_graph() const;
+    std::vector<std::vector<unsigned>> get_predecessor() const;
+    std::vector<std::vector<double>> get_floyd_warshall() const;
+    std::vector<std::vector<double>> get_heuristic() const;
+    std::vector<Node*> get_nodes() const; //not really const?
+
+    unsigned get_total_nodes() const;
+    unsigned get_total_edges() const;
+
 
     private:
-    struct Node {
-        unsigned id;
-        double latitude;
-        double longitude;
-    };
-    struct Connection {
-        unsigned id_from;
-        unsigned id_to;
-        double distance;
-    };
 
-    void print(const std::vector<std::vector<Node*>>& graph);
+    //computes the heuristic adjacancy matrix for use in the A* algorithm, each entry is the geographical distance between col and row, computed using the haversine formula
+    void compute_heuristic_adjacency_matrix();
+
+    //uses the haversine formula to return the distance between two nodes
+    double haversine(Node* node1, Node* node2);
+
+
+    //computes and updates the adjacency matrix for floyd_warshall_ using the floyd warshall's algorithm 
+    void compute_floyd_warshall();
+
+    //generic 2D print algorithm, current only works for graphs of type std::vector<std::vector<double>>
+    std::string print(const std::vector<std::vector<double>>& graph);
+
 
     //initial graphs
     std::vector<std::vector<double>> graph_; //the adjacency matrix representtation of the graph network, each entry represents the one way distance from col to row
