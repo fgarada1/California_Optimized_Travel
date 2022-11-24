@@ -120,6 +120,7 @@ Graph::Graph(const std::string& filename_nodes, const std::string& filename_edge
 
 
 
+
         ifs_edges >> id_edge;
         if (ifs_edges.good()) {
             ifs_edges >> id_to;
@@ -242,6 +243,25 @@ void Graph::compute_floyd_warshall() {
 
 }
 
+
+void Graph::print_graph() {
+    this->print(graph_);
+}
+
+
+double Graph::haversine(Node* node1, Node* node2) {
+    double delta_longitude = abs(node1->longitude - node2->longitude);
+    double delta_latitude = abs(node1->latitude - node2->latitude);
+
+
+    return -1;
+}
+
+
+void Graph::compute_floyd_warshall() {
+
+}
+
 //getters
 std::vector<std::vector<double>> Graph::get_graph() const { return graph_; }
 std::vector<std::vector<unsigned>> Graph::get_predecessor() const { return predecessor_; }
@@ -299,16 +319,6 @@ std::string Graph::print_heuristic() {
     return this->print(heuristic_);
 }
 
-std::string Graph::print(const std::vector<std::vector<double>>& graph) {
-    std::string output;
-    // std::cout << '\n' << std::endl;
-    // output += '\n';
-    for (const std::vector<double>& vect : graph) {
-        for (double distance : vect) {
-            // if (node_ptr != -1) {
-                // std::cout << distance << " ";
-                output += std::to_string(distance) + " ";
-                
 void Graph::print_floyd_warshall() {
     this->print(floyd_warshall_);
 }
