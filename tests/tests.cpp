@@ -1,6 +1,6 @@
 #include <catch2/catch_test_macros.hpp>
 #include "Graph.h"
-
+#include <iostream>
 
 //Add tests here
 
@@ -26,25 +26,56 @@ TEST_CASE("TEST_NAME", "[tag]") {
 
     // Graph graph2("../more_test/test_nodes.txt", "../more_test/test_edges.txt", 6, 8); //not supposed to cause an error
     // graph2.print_all_vars();
-    TEST_CASE("test nodes", "[constructor]") {
-        for (size_t j = 0; j < 2; j++) {
+    TEST_CASE("test nodes format error", "[constructor]") {
+        const size_t ktotal_nodes = 6;
+        const size_t ktotal_edges = 8;
+        size_t j = 0;
+        for (; j < 2; j++) {
             // std::cout << "line: " << j << std::endl;
             for (size_t i = 0; i < 3; i++) {
                 std::string input = "../more_test/test_nodes" + std::to_string(j) + std::to_string(i) + ".txt";
                 // Graph main_graph(input, "../more_test/test_edges.txt", 6, 8); //total_nodes and total_edges not supposed to cause an error
-                REQUIRE_THROWS( Graph(input, "../more_test/test_edges.txt", 6, 8) );
+                REQUIRE_THROWS( Graph(input, "../more_test/test_edges.txt", ktotal_nodes, ktotal_edges) );
             }
         }
+        j = 3;
+        for (size_t i = 0; i < 3; i++) {
+            std::string input = "../more_test/test_nodes" + std::to_string(j) + std::to_string(i) + ".txt";
+            // Graph main_graph(input, "../more_test/test_edges.txt", 6, 8); //total_nodes and total_edges not supposed to cause an error
+            REQUIRE_THROWS( Graph(input, "../more_test/test_edges.txt", ktotal_nodes, ktotal_edges) );
+        }
+        j = ktotal_nodes - 1; //6 - 1 = 5
+        for (size_t i = 0; i < 3; i++) {
+            std::string input = "../more_test/test_nodes" + std::to_string(j) + std::to_string(i) + ".txt";
+            // Graph main_graph(input, "../more_test/test_edges.txt", 6, 8); //total_nodes and total_edges not supposed to cause an error
+            REQUIRE_THROWS( Graph(input, "../more_test/test_edges.txt", ktotal_nodes, ktotal_edges) );
+        }
+
     }
-    TEST_CASE("test edges", "[constructor]") {
+    TEST_CASE("test edges format error", "[constructor]") {
+        const size_t ktotal_nodes = 6;
+        const size_t ktotal_edges = 8;
         // std::cout << "test edges" << std::endl;
-        for (size_t j = 0; j < 2; j++) {
+        size_t j = 0;
+        for (; j < 2; j++) {
             // std::cout << "line: " << j << std::endl;
             for (size_t i = 0; i < 4; i++) {
                 std::string input = "../more_test/test_edges" + std::to_string(j) + std::to_string(i) + ".txt";
                 // Graph main_graph("../more_test/test_nodes.txt", input, 6, 8); //total_nodes and total_edges not supposed to cause an error
-               REQUIRE_THROWS( Graph("../more_test/test_nodes.txt", input, 6, 8) );
+               REQUIRE_THROWS( Graph("../more_test/test_nodes.txt", input, ktotal_nodes, ktotal_edges) );
             }
+        }
+        j = 5;
+        for (size_t i = 0; i < 4; i++) {
+            std::string input = "../more_test/test_edges" + std::to_string(j) + std::to_string(i) + ".txt";
+            // Graph main_graph("../more_test/test_nodes.txt", input, 6, 8); //total_nodes and total_edges not supposed to cause an error
+            REQUIRE_THROWS( Graph("../more_test/test_nodes.txt", input, ktotal_nodes, ktotal_edges) );
+        }
+        j = ktotal_edges - 1; //8 - 1 = 7
+        for (size_t i = 0; i < 4; i++) {
+            std::string input = "../more_test/test_edges" + std::to_string(j) + std::to_string(i) + ".txt";
+            // Graph main_graph("../more_test/test_nodes.txt", input, 6, 8); //total_nodes and total_edges not supposed to cause an error
+            REQUIRE_THROWS( Graph("../more_test/test_nodes.txt", input, ktotal_nodes, ktotal_edges) );
         }
     }
 
@@ -157,6 +188,23 @@ TEST_CASE("TEST_NAME", "[tag]") {
             for (double num : vect) {
                 REQUIRE(((num == (-1.0)) || (num >= 0)));
             }
+        } //copied from floyd_warshall's initialization test case
+        for (size_t i = 0; i < total_nodes; i++) {
+            REQUIRE(graph.at(i).size() == total_nodes);
+            for (size_t j = 0; j < total_nodes; j++) {
+                double num1 = graph.at(i).at(j);
+                if (i == j) {
+                    std::cout << "i: " << i << " j: " << j << std::endl;
+                    std::cout << "num1: " << num1 << std::endl;
+                    std::cout << "(num1 == 0): " << (num1 == 0) << std::endl;
+                    REQUIRE(num1 == 0);
+                } else {
+                    std::cout << "i: " << i << " j: " << j << std::endl;
+                    std::cout << "num1: " << num1 << std::endl;
+                    std::cout << "(num1 == 0): " << (num1 == 0) << std::endl;
+                    REQUIRE(((num1 == (-1.0)) || (num1 > 0)));
+                }
+            }
         }
         std::string expected_output = "0.000000 -1.000000 -1.000000 -1.000000 -1.000000 -1.000000 "
                                    "\n20.100000 0.000000 -1.000000 -1.000000 -1.000000 2.700000 "
@@ -173,8 +221,8 @@ TEST_CASE("TEST_NAME", "[tag]") {
         REQUIRE(predecessors.size() == total_nodes);
         for (const std::vector<unsigned>& vect : predecessors) {
             REQUIRE(vect.size() == total_nodes);
-            for (double num : vect) {
-                REQUIRE(((num == (static_cast<unsigned>(-1))) || (num >= 0 && num < total_nodes)));
+            for (unsigned num : vect) {
+                REQUIRE(((num == (static_cast<unsigned>(-1))) || (num < total_nodes))); //num >= 0 && is always true
             }
         }
         std::string expected_output = "0 4294967295 4294967295 4294967295 4294967295 4294967295 "
@@ -213,10 +261,25 @@ TEST_CASE("TEST_NAME", "[tag]") {
             REQUIRE(graph.at(i).size() == total_nodes);
             REQUIRE(floyd_warshall.at(i).size() == total_nodes);
             for (size_t j = 0; j < total_nodes; j++) {
-                int num1 = graph.at(i).at(j);
-                int num2 = floyd_warshall.at(i).at(j);
-                REQUIRE(((num1 == (-1.0)) || (num1 >= 0)));
-                REQUIRE(((num2 == (-1.0)) || (num2 >= 0)));
+                double num1 = graph.at(i).at(j);
+                double num2 = floyd_warshall.at(i).at(j);
+                if (i == j) {
+                    std::cout << "i: " << i << " j: " << j << std::endl;
+                    std::cout << "num1: " << num1 << std::endl;
+                    std::cout << "(num1 == 0): " << (num1 == 0) << std::endl;
+                    std::cout << "num2: " << num2 << std::endl;
+                    std::cout << "(num2 == 0): " << (num2 == 0) << std::endl;
+                    REQUIRE(num1 == 0);
+                    REQUIRE(num2 == 0);
+                } else {
+                    std::cout << "i: " << i << " j: " << j << std::endl;
+                    std::cout << "num1: " << num1 << std::endl;
+                    std::cout << "(num1 == 0): " << (num1 == 0) << std::endl;
+                    std::cout << "num2: " << num2 << std::endl;
+                    std::cout << "(num2 == 0): " << (num2 == 0) << std::endl;
+                    REQUIRE(((num1 == (-1.0)) || (num1 > 0)));
+                    REQUIRE(((num2 == (-1.0)) || (num2 > 0)));
+                }
                 REQUIRE(num1 == num2);
             }
         }
@@ -252,7 +315,7 @@ TEST_CASE("TEST_NAME", "[tag]") {
                 // REQUIRE(((num1 == (-1.0)) || (num1 >= 0)));
                 // REQUIRE(((num2 == (-1.0)) || (num2 >= 0)));
                 // REQUIRE(num1 == num2);
-                int num = heuristic.at(i).at(j);
+                double num = heuristic.at(i).at(j);
                 REQUIRE(((num == (-1.0)) || (num >= 0)));
             }
         }
@@ -288,3 +351,4 @@ TEST_CASE("TEST_NAME", "[tag]") {
 //- BFS
 //- A* + heuristic check (none are null)
 //- Floyd Warshall's
+
