@@ -207,8 +207,8 @@ void Graph::compute_heuristic_adjacency_matrix() {
 
 
 double Graph::haversine(Node* node1, Node* node2) {
-    double delta_longitude = abs(node1->longitude - node2->longitude);
-    double delta_latitude = abs(node1->latitude - node2->latitude);
+    // double delta_longitude = abs(node1->longitude - node2->longitude);
+    // double delta_latitude = abs(node1->latitude - node2->latitude);
 
 
     return -1;
