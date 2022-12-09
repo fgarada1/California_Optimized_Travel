@@ -179,7 +179,7 @@ TEST_CASE("TEST_NAME", "[tag]") {
 
     //check that each mamber variable is initialized properly
     TEST_CASE("graph_ does not contain negative numbers other than -1", "[constructor]") {
-        Graph main_graph("../test_nodes2.txt", "../test_edges2.txt", 6, 8); //not supposed to cause an error
+        Graph main_graph("../more_test/example_nodes4.txt", "../more_test/example_edges4.txt", 5, 4); //not supposed to cause an error
         auto graph = main_graph.get_graph();
         unsigned total_nodes = main_graph.get_total_nodes();
         REQUIRE(graph.size() == total_nodes);
@@ -206,16 +206,15 @@ TEST_CASE("TEST_NAME", "[tag]") {
                 }
             }
         }
-        std::string expected_output = "0.000000 -1.000000 -1.000000 -1.000000 -1.000000 -1.000000 "
-                                   "\n20.100000 0.000000 -1.000000 -1.000000 -1.000000 2.700000 "
-                                   "\n20.200000 2.300000 0.000000 -1.000000 -1.000000 0.100000 "
-                                   "\n-1.000000 -1.000000 2.400000 0.000000 -1.000000 -1.000000 "
-                                   "\n-1.000000 -1.000000 -1.000000 2.500000 0.000000 2.600000 "
-                                   "\n-1.000000 -1.000000 -1.000000 -1.000000 -1.000000 0.000000 \n";
+        std::string expected_output = "0.000000 -1.000000 -1.000000 -1.000000 -1.000000 "
+                                    "\n4.000000 0.000000 2.000000 -1.000000 -1.000000 "
+                                    "\n1.000000 -1.000000 0.000000 -1.000000 -1.000000 "
+                                    "\n-1.000000 -1.000000 -1.000000 0.000000 -1.000000 "
+                                    "\n-1.000000 -1.000000 -1.000000 2.000000 0.000000 \n";
         REQUIRE(main_graph.print_graph() == expected_output);
     }
     TEST_CASE("predecessor_ does not contain numbers outside of range total_nodes, and infinity", "[constructor]") {
-        Graph main_graph("../test_nodes2.txt", "../test_edges2.txt", 6, 8); //not supposed to cause an error
+        Graph main_graph("../more_test/example_nodes4.txt", "../more_test/example_edges4.txt", 5, 4); //not supposed to cause an error
         auto predecessors = main_graph.get_predecessor();
         unsigned total_nodes = main_graph.get_total_nodes();
         REQUIRE(predecessors.size() == total_nodes);
@@ -225,16 +224,15 @@ TEST_CASE("TEST_NAME", "[tag]") {
                 REQUIRE(((num == (static_cast<unsigned>(-1))) || (num < total_nodes))); //num >= 0 && is always true
             }
         }
-        std::string expected_output = "0 4294967295 4294967295 4294967295 4294967295 4294967295 "
-                                    "\n1 1 4294967295 4294967295 4294967295 1 "
-                                    "\n2 2 2 4294967295 4294967295 2 "
-                                    "\n4294967295 4294967295 3 3 4294967295 4294967295 "
-                                    "\n4294967295 4294967295 4294967295 4 4 4 "
-                                    "\n4294967295 4294967295 4294967295 4294967295 4294967295 5 \n";
+        std::string expected_output = "0 4294967295 4294967295 4294967295 4294967295 "
+                                    "\n1 1 1 4294967295 4294967295 "
+                                    "\n2 4294967295 2 4294967295 4294967295 "
+                                    "\n4294967295 4294967295 4294967295 3 4294967295 "
+                                    "\n4294967295 4294967295 4294967295 4 4 \n";
         REQUIRE(main_graph.print_predecessors() == expected_output);
     }
     TEST_CASE("check that floyd_warshall_ is the same as graph_ upon initialization", "[constructor]") {
-        Graph main_graph("../test_nodes2.txt", "../test_edges2.txt", 6, 8); //not supposed to cause an error
+        Graph main_graph("../more_test/example_nodes4.txt", "../more_test/example_edges4.txt", 5, 4); //not supposed to cause an error
         auto graph = main_graph.get_graph();
         auto floyd_warshall = main_graph.get_floyd_warshall();
         unsigned total_nodes = main_graph.get_total_nodes();
@@ -284,18 +282,23 @@ TEST_CASE("TEST_NAME", "[tag]") {
             }
         }
         //could check the matrices themselves together, but this also works so I think this is fine for this scale
-        std::string expected_output = "0.000000 -1.000000 -1.000000 -1.000000 -1.000000 -1.000000 "
-                                   "\n20.100000 0.000000 -1.000000 -1.000000 -1.000000 2.700000 "
-                                   "\n20.200000 2.300000 0.000000 -1.000000 -1.000000 0.100000 "
-                                   "\n-1.000000 -1.000000 2.400000 0.000000 -1.000000 -1.000000 "
-                                   "\n-1.000000 -1.000000 -1.000000 2.500000 0.000000 2.600000 "
-                                   "\n-1.000000 -1.000000 -1.000000 -1.000000 -1.000000 0.000000 \n";
+        // std::string expected_output = "0.000000 -1.000000 -1.000000 -1.000000 -1.000000 -1.000000 "
+        //                            "\n20.100000 0.000000 -1.000000 -1.000000 -1.000000 2.700000 "
+        //                            "\n20.200000 2.300000 0.000000 -1.000000 -1.000000 0.100000 "
+        //                            "\n-1.000000 -1.000000 2.400000 0.000000 -1.000000 -1.000000 "
+        //                            "\n-1.000000 -1.000000 -1.000000 2.500000 0.000000 2.600000 "
+        //                            "\n-1.000000 -1.000000 -1.000000 -1.000000 -1.000000 0.000000 \n";
+        std::string expected_output = "0.000000 -1.000000 -1.000000 -1.000000 -1.000000 "
+                                    "\n4.000000 0.000000 2.000000 -1.000000 -1.000000 "
+                                    "\n1.000000 -1.000000 0.000000 -1.000000 -1.000000 "
+                                    "\n-1.000000 -1.000000 -1.000000 0.000000 -1.000000 "
+                                    "\n-1.000000 -1.000000 -1.000000 2.000000 0.000000 \n";
         REQUIRE(main_graph.print_graph() == expected_output);
         REQUIRE(main_graph.print_floyd_warshall() == expected_output);
         REQUIRE(main_graph.get_graph() == main_graph.get_floyd_warshall());
     }
     TEST_CASE("check that heuristic is initialized correctly", "[constructor]") {
-        Graph main_graph("../test_nodes2.txt", "../test_edges2.txt", 6, 8); //not supposed to cause an error
+        Graph main_graph("../more_test/example_nodes4.txt", "../more_test/example_edges4.txt", 5, 4); //not supposed to cause an error
         auto graph = main_graph.get_graph();
         auto heuristic = main_graph.get_heuristic();
         unsigned total_nodes = main_graph.get_total_nodes();
@@ -321,16 +324,21 @@ TEST_CASE("TEST_NAME", "[tag]") {
         }
         //TODO
         //make this right
-        std::string expected_output = "0.000000 -1.000000 -1.000000 -1.000000 -1.000000 -1.000000 "
-                                   "\n20.100000 0.000000 -1.000000 -1.000000 -1.000000 2.700000 "
-                                   "\n20.200000 2.300000 0.000000 -1.000000 -1.000000 0.100000 "
-                                   "\n-1.000000 -1.000000 2.400000 0.000000 -1.000000 -1.000000 "
-                                   "\n-1.000000 -1.000000 -1.000000 2.500000 0.000000 2.600000 "
-                                   "\n-1.000000 -1.000000 -1.000000 -1.000000 -1.000000 0.000000 \n";
-        // REQUIRE(main_graph.print_heuristic() == expected_output);
+        // std::string expected_output = "0.000000 -1.000000 -1.000000 -1.000000 -1.000000 -1.000000 "
+        //                            "\n20.100000 0.000000 -1.000000 -1.000000 -1.000000 2.700000 "
+        //                            "\n20.200000 2.300000 0.000000 -1.000000 -1.000000 0.100000 "
+        //                            "\n-1.000000 -1.000000 2.400000 0.000000 -1.000000 -1.000000 "
+        //                            "\n-1.000000 -1.000000 -1.000000 2.500000 0.000000 2.600000 "
+        //                            "\n-1.000000 -1.000000 -1.000000 -1.000000 -1.000000 0.000000 \n";
+        std::string expected_output     = "-1.000000 -1.000000 -1.000000 -1.000000 -1.000000 "
+                                        "\n-1.000000 -1.000000 -1.000000 -1.000000 -1.000000 "
+                                        "\n-1.000000 -1.000000 -1.000000 -1.000000 -1.000000 "
+                                        "\n-1.000000 -1.000000 -1.000000 -1.000000 -1.000000 "
+                                        "\n-1.000000 -1.000000 -1.000000 -1.000000 -1.000000 \n";
+        REQUIRE(main_graph.print_heuristic() == expected_output);
     }
     TEST_CASE("check that nodes_ is initializated correctly", "[constructor]") {
-        Graph main_graph("../test_nodes2.txt", "../test_edges2.txt", 6, 8); //not supposed to cause an error
+        Graph main_graph("../more_test/example_nodes4.txt", "../more_test/example_edges4.txt", 5, 4); //not supposed to cause an error
         auto graph = main_graph.get_graph();
         unsigned total_nodes = main_graph.get_total_nodes();
 
@@ -340,7 +348,7 @@ TEST_CASE("TEST_NAME", "[tag]") {
         }
 
         //could check the matrices themselves together, but this also works so I think this is fine for this scale
-        std::string expected_output = "[1.000000 1.000000] [2.000000 2.000000] [3.000000 3.000000] [4.000000 4.000000] [5.000000 5.000000] [6.000000 6.000000] ";
+        std::string expected_output = "[1.000000 4.000000] [1.000000 2.000000] [2.000000 3.000000] [1.000000 1.000000] [3.000000 1.000000] ";
         REQUIRE(main_graph.print_nodes() == expected_output);
     }
     
@@ -352,3 +360,42 @@ TEST_CASE("TEST_NAME", "[tag]") {
 //- A* + heuristic check (none are null)
 //- Floyd Warshall's
 
+    //check that floyd_walrshall works properly
+    TEST_CASE("floyd_warshall functions as intended", "[floyd_walker]") {
+        Graph main_graph("../more_test/example_nodes4.txt", "../more_test/example_edges4.txt", 5, 4); //not supposed to cause an error
+        auto graph = main_graph.get_graph();
+        auto floyd_warshall = main_graph.get_floyd_warshall();
+        unsigned total_nodes = main_graph.get_total_nodes();
+        REQUIRE(graph.size() == total_nodes);
+        REQUIRE(floyd_warshall.size() == total_nodes);
+        for (const std::vector<double>& vect : graph) {
+            REQUIRE(vect.size() == total_nodes);
+            for (double num : vect) {
+                REQUIRE(((num == (-1.0)) || (num >= 0)));
+            }
+        } //copied from floyd_warshall's initialization test case
+        for (size_t i = 0; i < total_nodes; i++) {
+            REQUIRE(floyd_warshall.at(i).size() == total_nodes);
+            for (size_t j = 0; j < total_nodes; j++) {
+                double num1 = graph.at(i).at(j);
+                if (i == j) {
+                    std::cout << "i: " << i << " j: " << j << std::endl;
+                    std::cout << "num1: " << num1 << std::endl;
+                    std::cout << "(num1 == 0): " << (num1 == 0) << std::endl;
+                    REQUIRE(num1 == 0);
+                } else {
+                    std::cout << "i: " << i << " j: " << j << std::endl;
+                    std::cout << "num1: " << num1 << std::endl;
+                    std::cout << "(num1 == 0): " << (num1 == 0) << std::endl;
+                    REQUIRE(((num1 == (-1.0)) || (num1 > 0)));
+                }
+            }
+        }
+        main_graph.compute_floyd_warshall();
+        std::string expected_output = "0.000000 -1.000000 -1.000000 -1.000000 -1.000000 "
+                                    "\n4.000000 0.000000 2.000000 -1.000000 -1.000000 "
+                                    "\n1.000000 -1.000000 0.000000 -1.000000 -1.000000 "
+                                    "\n-1.000000 -1.000000 -1.000000 0.000000 -1.000000 "
+                                    "\n-1.000000 -1.000000 -1.000000 2.000000 0.000000 \n";
+        // REQUIRE(main_graph.print_floyd_warshall() == expected_output);
+    }
