@@ -216,7 +216,18 @@ double Graph::haversine(Node* node1, Node* node2) {
 
 
 void Graph::compute_floyd_warshall() {
-    // add algo
+    print_floyd_warshall();
+    int n = floyd_warshall_.size();
+    for (int k = 0; k < n; k++) {
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (floyd_warshall_[i][k] + floyd_warshall_[k][j] < floyd_warshall_[i][j]) {
+                    floyd_warshall_[i][j] = floyd_warshall_[i][k] + floyd_warshall_[k][j];
+                }
+            }
+        }
+    }
+    print_floyd_warshall();
 }
 
 //getters

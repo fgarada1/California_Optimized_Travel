@@ -6,6 +6,11 @@ int main() {
     // Graph graph("../more_test/example_nodes.txt", "../more_test/example_edges.txt", 41);
     // Graph graph("../more_test/example_nodes2.txt", "../more_test/example_edges2.txt", 11, 11); //supposed to cause an error on line 8 of "../example_edges2.txt"
     Graph graph("../more_test/example_nodes3.txt", "../more_test/example_edges3.txt", 11, 11); //not supposed to cause an error
-    graph.print_graph();
-    graph.print_predecessors();
+    // graph.print_graph();
+    // graph.print_predecessors();
+
+    // std::cout << "_______________" << std::endl;
+
+    graph.print_all_vars();
+    graph.print_floyd_warshall();
 }
