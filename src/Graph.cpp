@@ -12,6 +12,7 @@
 Graph::Graph(const std::string& filename_nodes, const std::string& filename_edges, unsigned total_nodes, unsigned total_edges) 
 : graph_(total_nodes, std::vector<double>(total_nodes, std::numeric_limits<double>::max())), 
     predecessor_(total_nodes, std::vector<unsigned>(total_nodes, std::numeric_limits<unsigned>::max())), //change to int if it makes sense to do so
+    floyd_warshall_(total_nodes, std::vector<double>(total_nodes, std::numeric_limits<double>::max())), 
     heuristic_(total_nodes, std::vector<double>(total_nodes, -1)), 
     nodes_(total_nodes, nullptr), 
     total_nodes_(total_nodes), total_edges_(total_edges) {
@@ -67,6 +68,7 @@ Graph::Graph(const std::string& filename_nodes, const std::string& filename_edge
         }
         try {
             graph_.at(id2).at(id2) = 0;
+            floyd_warshall_.at(id2).at(id2) = 0;
             predecessor_.at(id2).at(id2) = id2;
         } catch (std::exception& e) {
             throw std::invalid_argument("total_nodes_ is fewer than the number of nodes provided: "
@@ -115,20 +117,20 @@ Graph::Graph(const std::string& filename_nodes, const std::string& filename_edge
     unsigned count2 = 0;
     while (ifs_edges.good() && count2 < total_edges_) {
         unsigned id_edge;
-        unsigned id_to;
         unsigned id_from;
+        unsigned id_to;
         std::string distance;
         double distance_double;
 
 
         ifs_edges >> id_edge;
         if (ifs_edges.good()) {
-            ifs_edges >> id_to;
+            ifs_edges >> id_from;
         } else {
             throw std::invalid_argument("Format 2 read error on line: " + std::to_string(count2));
         }
         if (ifs_edges.good()) {
-            ifs_edges >> id_from;
+            ifs_edges >> id_to;
         } else {
             throw std::invalid_argument("Format 2 read error on line: " + std::to_string(count2));
         }
@@ -143,7 +145,7 @@ Graph::Graph(const std::string& filename_nodes, const std::string& filename_edge
             throw std::invalid_argument("Format 2 read error on line: " + std::to_string(count2));
         }
 
-        std::cout << id_edge << " " << id_to << " " << id_from << " " << distance_double << std::endl;
+        std::cout << id_edge << " " << id_from << " " << id_to << " " << distance_double << std::endl;
         if (id_from >= total_nodes) {
             throw std::invalid_argument("id_from: " + std::to_string(id_from) + " on line: " + std::to_string(count2) + " out of range of total_nodes_: " + std::to_string(total_nodes_));
         }
@@ -158,6 +160,7 @@ Graph::Graph(const std::string& filename_nodes, const std::string& filename_edge
             }
         try {
             graph_.at(id_from).at(id_to) = distance_double;
+            floyd_warshall_.at(id_from).at(id_to) = distance_double;
             predecessor_.at(id_from).at(id_to) = id_from; //not sure if this is the correct thing to do here, based on ? floyd-warshall's algorithm
         } catch (std::exception& e) {
             //
@@ -180,7 +183,7 @@ Graph::Graph(const std::string& filename_nodes, const std::string& filename_edge
     }
 
     compute_heuristic_adjacency_matrix();
-    floyd_warshall_ = graph_; //this is a copy, not a reference to graph_
+    // floyd_warshall_ = graph_; //this is a copy, not a reference to graph_
 }
 
 Graph::~Graph() {
@@ -226,6 +229,7 @@ void Graph::compute_floyd_warshall() {
              for (int j = 0; j < n; j++) {
                  if (floyd_warshall_[i][k] + floyd_warshall_[k][j] < floyd_warshall_[i][j]) {
                      floyd_warshall_[i][j] = floyd_warshall_[i][k] + floyd_warshall_[k][j];
+                     predecessor_[i][j] = predecessor_[k][j];
                  }
              }
          }
