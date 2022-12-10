@@ -251,9 +251,9 @@ std::vector<Node*> Graph::shortest_path_floyd_warshall(unsigned id_from, unsigne
     unsigned current_input = id_from;
     unsigned current_output = predecessor_.at(current_input).at(id_to);
 
-    for (; current_output != id_to; current_input = current_output) { //std::numeric_limits<unsigned>::max()
-        output.push_back(nodes_.at(current_output));
-    }
+    // for (; current_output != id_to; current_input = current_output) { //std::numeric_limits<unsigned>::max()
+    //     output.push_back(nodes_.at(current_output));
+    // }
 
     if (current_output == id_to) {
         output.push_back(nodes_.at(id_to)); //could be pushed back anyway to calculate the shortest distance along the path
