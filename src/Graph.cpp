@@ -342,7 +342,7 @@ std::vector<Node*> Graph::shortest_path_floyd_warshall(Node* node_from, Node* no
     return shortest_path_floyd_warshall(id_from, id_to);
 }
 
-std::vector<Connection> Graph::compute_dijkstra_path(unsigned id_from, unsigned id_to) {
+std::vector<Node*> Graph::compute_dijkstra_path(unsigned id_from, unsigned id_to) {
     //could combine both of these error messages into one
     if (id_from >= total_nodes_) {
         throw std::invalid_argument("id_from:  " + std::to_string(id_from) + " is out of range of total_nodes_: " + std::to_string(total_nodes_));
@@ -351,12 +351,11 @@ std::vector<Connection> Graph::compute_dijkstra_path(unsigned id_from, unsigned 
         throw std::invalid_argument("id_to:  " + std::to_string(id_to) + " is out of range of total_nodes_: " + std::to_string(total_nodes_));
     }
     std::vector<Connection> output; //not sure if returning an empty vector here is the best option that is available at the moment
-    
+    std::vector<Node*> nodes;
+
     if (id_to == id_from) {
-        Connection connection{id_to, id_from, graph_.at(id_to).at(id_from)}; //should have a distance of 0
-        assert(connection.distance == 0);
-        output.push_back(connection);
-        return output;
+        nodes.push_back(nodes_.at(id_from));
+        return nodes;
     }
 
     int n = total_nodes_;
@@ -375,46 +374,7 @@ std::vector<Connection> Graph::compute_dijkstra_path(unsigned id_from, unsigned 
         priority_queue.push_back(connection);
     }
 
-    //change id_from when necessary
-
-    // std::cout << "All Connections: " << std::endl;
-    // for (const Connection& connection : priority_queue) {
-    //     std::cout << connection.print() << std::endl;
-    // }
-
-    // std::cout << "is_heap: " << std::is_heap(priority_queue.begin(), priority_queue.end()) << std::endl;
-
     std::make_heap(priority_queue.begin(), priority_queue.end());
-
-    // std::cout << "is_heap: " << std::is_heap(priority_queue.begin(), priority_queue.end()) << std::endl;
-
-    // std::cout << "All Connections: " << std::endl;
-    // for (const Connection& connection : priority_queue) {
-    //     std::cout << connection.print() << std::endl;
-    // }
-
-    // std::cout << "Pop priority queue: " << std::endl;
-    // while (!priority_queue.empty()) {
-    //     Connection top = priority_queue.at(0);
-    //     std::cout << top.print() << std::endl;
-    //     output.push_back(top);
-    //     visited.at(top.id_to) = true;
-    //     priority_queue.erase(priority_queue.begin());
-    //     std::make_heap(priority_queue.begin(), priority_queue.end());
-    // }
-
-    // for (double num : adjacancy_list) {
-    //     std::cout << num << " ";
-    // } 
-    // std::cout << std::endl;
-    // for (unsigned num : predecessor) {
-    //     std::cout << num << " ";
-    // } 
-    // std::cout << std::endl;
-    // for (unsigned num : visited) {
-    //     std::cout << num << " ";
-    // } 
-    // std::cout << std::endl;
 
     //repeat n times: (from the cs225 lecture slides for prim's algorithm)
     for (size_t i = 0; i < total_nodes_; i++) { //for every node in the graph
@@ -431,7 +391,7 @@ std::vector<Connection> Graph::compute_dijkstra_path(unsigned id_from, unsigned 
 
         //go through all of the neighbors of top, not in visited
         unsigned current_id = top.id_to;
-        if (!visited.at(current_id)) {
+        // if (!visited.at(current_id)) {
             for (unsigned id_next = 0; id_next < total_nodes_; id_next++) { //can replace this with adjacency list, currently this traversal is O(n)
                 Connection connection{current_id, id_next, graph_.at(current_id).at(id_next)};
                 
@@ -440,7 +400,8 @@ std::vector<Connection> Graph::compute_dijkstra_path(unsigned id_from, unsigned 
                     Connection& check = priority_queue.at(k);
                     if (check.id_to == id_next) {
                         if (connection > check) { //operator is flipped to make a min heap
-                            check = connection;
+                            check.id_from = connection.id_from;
+                            check.distance += connection.distance;
                             std::make_heap(priority_queue.begin(), priority_queue.end());
                         }
                         break;
@@ -449,16 +410,18 @@ std::vector<Connection> Graph::compute_dijkstra_path(unsigned id_from, unsigned 
 
             }
 
-        }
+        // }
 
     }
 
-    
+    for (const Connection& connection : output) {
+        nodes.push_back(nodes_.at(connection.id_to));
+    }
 
-    return output;
+    return nodes;
 }
 
-std::vector<Connection> Graph::compute_dijkstra_path(Node* node_from, Node* node_to) {
+std::vector<Node*> Graph::compute_dijkstra_path(Node* node_from, Node* node_to) {
     if (node_from == nullptr) {
         throw std::invalid_argument("node_from is nullptr");
     }
