@@ -38,11 +38,11 @@ class Graph {
     //computes and updates the adjacency matrix for floyd_warshall_ using the floyd warshall's algorithm 
     void compute_floyd_warshall();
 
-    //returns the shortest path as a std::vector<Node*> from id_from to id_to, based on the floyd warshall's algorithm, if no such path exists, returns an empty vector
+    //returns the shortest path as a std::vector<Node*> from node_from to node_to, based on the floyd warshall's algorithm, if no such path exists, returns an empty vector
     std::vector<Node*> shortest_path_floyd_warshall(unsigned id_from, unsigned id_to);
     std::vector<Node*> shortest_path_floyd_warshall(Node* node_from, Node* node_to);
 
-    //returns the shortest path as a std::vector<Node*> from id_from to id_to, based on the dijkstra's algorithm, if no such path exists, returns an empty vector
+    //returns the shortest path as a std::vector<Node*> from node_from to node_to, based on the dijkstra's algorithm, if no such path exists, returns an empty vector
     std::vector<Node*> compute_dijkstra_path(unsigned id_from, unsigned id_to);
     std::vector<Node*> compute_dijkstra_path(Node* node_from, Node* node_to);
 
@@ -69,6 +69,8 @@ class Graph {
     //uses the haversine formula to return the distance between two nodes
     double haversine(Node* node1, Node* node2);
 
+    //uses the pythagorean formula to return the distance between two nodes
+    double pythagorean_distance(Node* node1, Node* node2);
 
     // //computes and updates the adjacency matrix for floyd_warshall_ using the floyd warshall's algorithm 
     // void compute_floyd_warshall();
