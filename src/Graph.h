@@ -11,6 +11,9 @@ struct Connection {
     unsigned id_from;
     unsigned id_to;
     double distance;
+    bool operator<(const Connection& other) const;
+    bool operator>(const Connection& other) const;
+    std::string print() const;
 };
 
 class Graph {
@@ -31,6 +34,18 @@ class Graph {
 
     //prints information about all member variables of the graph object
     void print_all_vars();
+
+    //computes and updates the adjacency matrix for floyd_warshall_ using the floyd warshall's algorithm 
+    void compute_floyd_warshall();
+
+    //returns the shortest path as a std::vector<Node*> from node_id1 to node_id2, based on the floyd warshall's algorithm, if no such path exists, returns an empty vector
+    std::vector<Node*> shortest_path_floyd_warshall(unsigned node_id1, unsigned node_id2);
+    std::vector<Node*> shortest_path_floyd_warshall(Node* node1, Node* node2);
+
+    //returns the shortest path as a std::vector<Node*> from node_id1 to node_id2, based on the dijkstra's algorithm, if no such path exists, returns an empty vector
+    std::vector<Node*> compute_dijkstra_path(unsigned id_from, unsigned id_to);
+    std::vector<Node*> compute_dijkstra_path(Node* node_from, Node* node_to);
+
 
     //deconstructor for all member variables in the graph, deletes new nodes (if there are any being used in the current graph)
     ~Graph();
@@ -55,8 +70,8 @@ class Graph {
     double haversine(Node* node1, Node* node2);
 
 
-    //computes and updates the adjacency matrix for floyd_warshall_ using the floyd warshall's algorithm 
-    void compute_floyd_warshall();
+    // //computes and updates the adjacency matrix for floyd_warshall_ using the floyd warshall's algorithm 
+    // void compute_floyd_warshall();
 
     //generic 2D print algorithm, current only works for graphs of type std::vector<std::vector<double>>
     std::string print(const std::vector<std::vector<double>>& graph);
