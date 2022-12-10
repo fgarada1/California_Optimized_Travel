@@ -6,6 +6,7 @@ struct Node {
     unsigned id;
     double latitude;
     double longitude;
+    std::string print() const;
 };
 struct Connection {
     unsigned id_from;
