@@ -563,7 +563,7 @@ void Graph::print_all_vars() {
 
 std::string Node::print() const {
     std::string output;
-    output += std::to_string(this->id) + " " + std::to_string(this->longitude) + " " + std::to_string(this->latitude) + " ";
+    output += std::to_string(this->id) + " " + std::to_string(this->latitude) + " " + std::to_string(this->longitude) + " ";
     return output;
 }
 
