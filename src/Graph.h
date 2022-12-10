@@ -28,6 +28,8 @@ class Graph {
     std::string print_predecessors();
     //prints the contents of nodes_, for use in the A* algorithm
     std::string print_nodes();
+    //generic 2D print algorithm, for graphs of type std::vector<Node*>
+    std::string print_nodes(const std::vector<Node*>& graph);
     //prints the contents of floyd_warshall_, the result of the floyd warshall's algorithm
     std::string print_floyd_warshall();
     //prints the contents of heuristic_, for use in the A* algorithm
@@ -79,7 +81,7 @@ class Graph {
     // //computes and updates the adjacency matrix for floyd_warshall_ using the floyd warshall's algorithm 
     // void compute_floyd_warshall();
 
-    //generic 2D print algorithm, current only works for graphs of type std::vector<std::vector<double>>
+    //generic 2D print algorithm, for graphs of type std::vector<std::vector<double>>
     std::string print(const std::vector<std::vector<double>>& graph);
 
 
