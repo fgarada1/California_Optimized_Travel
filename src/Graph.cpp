@@ -14,7 +14,7 @@ Graph::Graph(const std::string& filename_nodes, const std::string& filename_edge
 : graph_(total_nodes, std::vector<double>(total_nodes, std::numeric_limits<double>::max())), 
     predecessor_(total_nodes, std::vector<unsigned>(total_nodes, std::numeric_limits<unsigned>::max())), //change to int if it makes sense to do so
     floyd_warshall_(total_nodes, std::vector<double>(total_nodes, std::numeric_limits<double>::max())), 
-    heuristic_(total_nodes, std::vector<double>(total_nodes, -1)), 
+    heuristic_(total_nodes, std::vector<double>(total_nodes, std::numeric_limits<double>::max())), 
     nodes_(total_nodes, nullptr), 
     total_nodes_(total_nodes), total_edges_(total_edges) {
 
@@ -202,23 +202,53 @@ Graph::~Graph() {
 void Graph::compute_heuristic_adjacency_matrix() {
     assert(nodes_.size() == total_nodes_);
     assert(heuristic_.size() == total_nodes_);
+    assert(graph_.size() == total_nodes_);
     //could assert that each row exists and has size == total_nodes, but this could be unneccessary and make compile time longer
     for (size_t i = 0; i < total_nodes_; i++) {
         for (size_t j = i; j < total_nodes_; j++) {
-            double distance = haversine(nodes_.at(i), nodes_.at(j));
-            heuristic_.at(i).at(j) = distance;
-            heuristic_.at(j).at(i) = distance;
+            // if (graph_.at(i).at(j) != std::numeric_limits<double>::max()) {
+                double distance = haversine(nodes_.at(i), nodes_.at(j));
+                // double distance = pythagorean_distance(nodes_.at(i), nodes_.at(j));
+                heuristic_.at(i).at(j) = distance;
+                heuristic_.at(j).at(i) = distance;
+            // }
         }
     }
 }
 
 
 double Graph::haversine(Node* node_from, Node* node_to) {
-    // double delta_longitude = abs(node_from->longitude - node_to->longitude);
-    // double delta_latitude = abs(node_from->latitude - node_to->latitude);
+    // double delta_longitude = std::abs(node_from->longitude - node_to->longitude);
+    // double delta_latitude = std::abs(node_from->latitude - node_to->latitude);
 
+    double longitude2 = node_to->longitude;
+    double longitude1 = node_from->longitude;
+    double latitude2 = node_to->latitude;
+    double latitude1 = node_from->latitude;
 
-    return -1;
+    double scaled_distance = (sin(longitude2 - longitude1))*(sin(longitude2 - longitude1)) + cos(longitude1) * cos(longitude2)* (sin(latitude2 - latitude1))*(sin(latitude2 - latitude1));
+
+    // const double kradius_earth = 6378100; //don't need this part, if they are all scaled by the same amount
+
+    // double distance = scaled_distance*kradius_earth;
+
+    return scaled_distance;
+}
+
+double Graph::pythagorean_distance(Node* node_from, Node* node_to) {
+    double delta_longitude = std::abs(node_from->longitude - node_to->longitude);
+    double delta_latitude = std::abs(node_from->latitude - node_to->latitude);
+
+    // double longitude2 = node_to->longitude;
+    // double longitude1 = node_from->longitude;
+    // double latitude2 = node_to->latitude;
+    // double latitude1 = node_from->latitude;
+
+    double inside = delta_longitude*delta_longitude + delta_latitude*delta_latitude;
+
+    double distance = std::sqrt(inside);
+
+    return distance;
 }
 
 
