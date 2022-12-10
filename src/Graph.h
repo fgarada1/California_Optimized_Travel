@@ -12,8 +12,8 @@ struct Connection {
     unsigned id_from;
     unsigned id_to;
     double distance;
-    bool operator<(const Connection& other) const;
-    bool operator>(const Connection& other) const;
+    bool operator<(const Connection& other) const; //flipped to make a min heap
+    bool operator>(const Connection& other) const; //flipped to make a min heap
     std::string print() const;
 };
 
