@@ -209,8 +209,8 @@ void Graph::compute_heuristic_adjacency_matrix() {
     for (size_t i = 0; i < total_nodes_; i++) {
         for (size_t j = i; j < total_nodes_; j++) {
             // if (graph_.at(i).at(j) != std::numeric_limits<double>::max()) {
-                double distance = haversine(nodes_.at(i), nodes_.at(j));
-                // double distance = pythagorean_distance(nodes_.at(i), nodes_.at(j));
+                // double distance = haversine(nodes_.at(i), nodes_.at(j));
+                double distance = pythagorean_distance(nodes_.at(i), nodes_.at(j)); //because the data is given in normalized coordinates
                 heuristic_.at(i).at(j) = distance;
                 heuristic_.at(j).at(i) = distance;
             // }
@@ -251,7 +251,7 @@ double Graph::haversine(Node* node_from, Node* node_to) {
     
     const double PI = 3.14159265359;
 
-    const double R = 6371000;
+    const double R = 63.71; //in kilometers*100 as to not exceed the distance heuristic
     double lat1 = latitude1 * PI/180;
     double lat2 = latitude2 * PI/180;
     double lon1 = longitude1 * PI/180;
