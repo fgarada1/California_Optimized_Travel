@@ -211,11 +211,11 @@ TEST_CASE("TEST_NAME", "[tag]") {
         //                             "\n1.000000 -1.000000 0.000000 -1.000000 -1.000000 "
         //                             "\n-1.000000 -1.000000 -1.000000 0.000000 -1.000000 "
         //                             "\n-1.000000 -1.000000 -1.000000 2.000000 0.000000 \n";
-        std::string expected_output = "0.000000 max max max max "
-                                    "\n4.000000 0.000000 2.000000 max max "
-                                    "\n1.000000 max 0.000000 max max "
-                                    "\nmax max max 0.000000 max "
-                                    "\nmax max max 2.000000 0.000000 \n";
+        std::string expected_output = "0.000000 4.000000 1.000000 max max "
+                                    "\nmax 0.000000 max max max "
+                                    "\nmax 2.000000 0.000000 max max "
+                                    "\nmax max max 0.000000 2.000000 "
+                                    "\nmax max max max 0.000000 \n";
         
         REQUIRE(main_graph.print_graph() == expected_output);
     }
@@ -230,11 +230,11 @@ TEST_CASE("TEST_NAME", "[tag]") {
                 REQUIRE(((num == (static_cast<unsigned>(-1))) || (num < total_nodes))); //num >= 0 && is always true
             }
         }
-        std::string expected_output = "0 max max max max "
-                                    "\n1 1 1 max max "
-                                    "\n2 max 2 max max "
-                                    "\nmax max max 3 max "
-                                    "\nmax max max 4 4 \n";
+        std::string expected_output = "0 0 0 max max "
+                                    "\nmax 1 max max max "
+                                    "\nmax 2 2 max max "
+                                    "\nmax max max 3 3 "
+                                    "\nmax max max max 4 \n";
         REQUIRE(main_graph.print_predecessors() == expected_output);
     }
     TEST_CASE("check that floyd_warshall_ is the same as graph_ upon initialization", "[constructor]") {
@@ -294,11 +294,11 @@ TEST_CASE("TEST_NAME", "[tag]") {
         //                            "\n-1.000000 -1.000000 2.400000 0.000000 -1.000000 -1.000000 "
         //                            "\n-1.000000 -1.000000 -1.000000 2.500000 0.000000 2.600000 "
         //                            "\n-1.000000 -1.000000 -1.000000 -1.000000 -1.000000 0.000000 \n";
-        std::string expected_output = "0.000000 max max max max "
-                                    "\n4.000000 0.000000 2.000000 max max "
-                                    "\n1.000000 max 0.000000 max max "
-                                    "\nmax max max 0.000000 max "
-                                    "\nmax max max 2.000000 0.000000 \n";
+        std::string expected_output = "0.000000 4.000000 1.000000 max max "
+                                    "\nmax 0.000000 max max max "
+                                    "\nmax 2.000000 0.000000 max max "
+                                    "\nmax max max 0.000000 2.000000 "
+                                    "\nmax max max max 0.000000 \n";
         REQUIRE(main_graph.print_graph() == expected_output);
         REQUIRE(main_graph.print_floyd_warshall() == expected_output);
         REQUIRE(main_graph.get_graph() == main_graph.get_floyd_warshall());
@@ -398,10 +398,17 @@ TEST_CASE("TEST_NAME", "[tag]") {
             }
         }
         main_graph.compute_floyd_warshall();
-        std::string expected_output = "0.000000 max max max max "
-                                    "\n3.000000 0.000000 2.000000 max max "
-                                    "\n1.000000 max 0.000000 max max "
-                                    "\nmax max max 0.000000 max "
-                                    "\nmax max max 2.000000 0.000000 \n";
-        // REQUIRE(main_graph.print_floyd_warshall() == expected_output);
+        std::string expected_output = "0.000000 3.000000 1.000000 max max "
+                                    "\nmax 0.000000 max max max "
+                                    "\nmax 2.000000 0.000000 max max "
+                                    "\nmax max max 0.000000 2.000000 "
+                                    "\nmax max max max 0.000000 \n";
+        REQUIRE(main_graph.print_floyd_warshall() == expected_output);
+
+        std::string expected_predecessor_output = "0 2 0 max max "
+                                                "\nmax 1 max max max "
+                                                "\nmax 2 2 max max "
+                                                "\nmax max max 3 3 "
+                                                "\nmax max max max 4 \n";
+        REQUIRE(main_graph.print_predecessors() == expected_predecessor_output);
     }
