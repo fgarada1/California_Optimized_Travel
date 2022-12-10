@@ -602,6 +602,23 @@ std::string Graph::print(const std::vector<std::vector<double>>& graph) {
     return output;
 }
 
+std::string Graph::print_nodes(const std::vector<Node*>& graph) {
+    std::string output;
+    // std::cout << '\n' << std::endl;
+    // output += '\n';
+    for (Node* node : graph) {
+        if (node == nullptr) {
+            output += "null ";
+        } else {
+            output += node->print();
+        }
+        output += '\n';
+    }
+    // std::cout << std::endl;
+    // output += '\n';
+    return output;
+}
+
 void Graph::print_all_vars() {
     std::cout << "\ngraph_\n" << this->print_graph() << std::endl;
     std::cout << "\npredecessor_\n" << this->print_predecessors() << std::endl;
