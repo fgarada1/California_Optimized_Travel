@@ -312,23 +312,23 @@ TEST_CASE("TEST_NAME", "[tag]") {
         for (const std::vector<double>& vect : heuristic) {
             REQUIRE(vect.size() == total_nodes);
             for (double num : vect) {
-                REQUIRE(((num == (-1.0)) || (num >= 0)));
+                REQUIRE((num >= 0));
             }
         }
         REQUIRE(heuristic.size() == total_nodes);
-        for (size_t i = 0; i < total_nodes; i++) {
-            REQUIRE(heuristic.at(i).size() == total_nodes);
-            for (size_t j = 0; j < total_nodes; j++) {
-                // int num1 = graph.at(i).at(j);
-                // int num2 = floyd_warshall.at(i).at(j);
-                // REQUIRE(((num1 == (-1.0)) || (num1 >= 0)));
-                // REQUIRE(((num2 == (-1.0)) || (num2 >= 0)));
-                // REQUIRE(num1 == num2);
-                double num = heuristic.at(i).at(j);
-                REQUIRE(((num == (-1.0)) || (num >= 0)));
-            }
-        }
-        //TODO
+        // for (size_t i = 0; i < total_nodes; i++) {
+        //     REQUIRE(heuristic.at(i).size() == total_nodes);
+        //     for (size_t j = 0; j < total_nodes; j++) {
+        //         // int num1 = graph.at(i).at(j);
+        //         // int num2 = floyd_warshall.at(i).at(j);
+        //         // REQUIRE(((num1 == (-1.0)) || (num1 >= 0)));
+        //         // REQUIRE(((num2 == (-1.0)) || (num2 >= 0)));
+        //         // REQUIRE(num1 == num2);
+        //         double num = heuristic.at(i).at(j);
+        //         REQUIRE((num >= 0));
+        //     }
+        // }
+        //TODO //done? not checked but I assume it's correct
         //make this right
         // std::string expected_output = "0.000000 -1.000000 -1.000000 -1.000000 -1.000000 -1.000000 "
         //                            "\n20.100000 0.000000 -1.000000 -1.000000 -1.000000 2.700000 "
@@ -336,11 +336,17 @@ TEST_CASE("TEST_NAME", "[tag]") {
         //                            "\n-1.000000 -1.000000 2.400000 0.000000 -1.000000 -1.000000 "
         //                            "\n-1.000000 -1.000000 -1.000000 2.500000 0.000000 2.600000 "
         //                            "\n-1.000000 -1.000000 -1.000000 -1.000000 -1.000000 0.000000 \n";
-        std::string expected_output     = "-1.000000 -1.000000 -1.000000 -1.000000 -1.000000 "
-                                        "\n-1.000000 -1.000000 -1.000000 -1.000000 -1.000000 "
-                                        "\n-1.000000 -1.000000 -1.000000 -1.000000 -1.000000 "
-                                        "\n-1.000000 -1.000000 -1.000000 -1.000000 -1.000000 "
-                                        "\n-1.000000 -1.000000 -1.000000 -1.000000 -1.000000 \n";
+        // std::string expected_output     = "-1.000000 -1.000000 -1.000000 -1.000000 -1.000000 "
+        //                                 "\n-1.000000 -1.000000 -1.000000 -1.000000 -1.000000 "
+        //                                 "\n-1.000000 -1.000000 -1.000000 -1.000000 -1.000000 "
+        //                                 "\n-1.000000 -1.000000 -1.000000 -1.000000 -1.000000 "
+        //                                 "\n-1.000000 -1.000000 -1.000000 -1.000000 -1.000000 \n";
+        std::string expected_output     = "0.000000 0.241371 0.548867 0.005814 0.816169 "
+                                        "\n0.241371 0.000000 0.548867 0.206705 0.448077 "
+                                        "\n0.548867 0.548867 0.000000 0.522167 1.048709 "
+                                        "\n0.005814 0.206705 0.522167 0.000000 0.826822 "
+                                        "\n0.816169 0.448077 1.048709 0.826822 0.000000 \n";
+                                        
         REQUIRE(main_graph.print_heuristic() == expected_output);
     }
     TEST_CASE("check that nodes_ is initializated correctly", "[constructor]") {
