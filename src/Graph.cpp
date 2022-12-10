@@ -9,6 +9,8 @@
 #include <set>
 #include <limits>
 #include <algorithm>
+#include <numbers>
+#include <math.h>
 
 Graph::Graph(const std::string& filename_nodes, const std::string& filename_edges, unsigned total_nodes, unsigned total_edges) 
 : graph_(total_nodes, std::vector<double>(total_nodes, std::numeric_limits<double>::max())), 
@@ -226,13 +228,43 @@ double Graph::haversine(Node* node_from, Node* node_to) {
     double latitude2 = node_to->latitude;
     double latitude1 = node_from->latitude;
 
-    double scaled_distance = (sin(longitude2 - longitude1))*(sin(longitude2 - longitude1)) + cos(longitude1) * cos(longitude2)* (sin(latitude2 - latitude1))*(sin(latitude2 - latitude1));
+    // double scaled_distance = (sin(longitude2 - longitude1))*(sin(longitude2 - longitude1)) + cos(longitude1) * cos(longitude2)* (sin(latitude2 - latitude1))*(sin(latitude2 - latitude1));
 
     // const double kradius_earth = 6378100; //don't need this part, if they are all scaled by the same amount
 
     // double distance = scaled_distance*kradius_earth;
 
-    return scaled_distance;
+    //code copied from https://www.movable-type.co.uk/scripts/latlong.html
+    // JavaScript:	
+    // const R = 6371e3; // metres
+    // const φ1 = lat1 * Math.PI/180; // φ, λ in radians
+    // const φ2 = lat2 * Math.PI/180;
+    // const Δφ = (lat2-lat1) * Math.PI/180;
+    // const Δλ = (lon2-lon1) * Math.PI/180;
+
+    // const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
+    //         Math.cos(φ1) * Math.cos(φ2) *
+    //         Math.sin(Δλ/2) * Math.sin(Δλ/2);
+    // const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+
+    // const d = R * c; // in metres
+    
+    const double PI = 3.14159265359;
+
+    const double R = 6371000;
+    double lat1 = latitude1 * PI/180;
+    double lat2 = latitude2 * PI/180;
+    double lon1 = longitude1 * PI/180;
+    double lon2 = longitude2 * PI/180;
+    double delta_lat = (lat2 - lat1);
+    double delta_lon = (lon2 - lon1);
+
+    double a = sin(delta_lat/2) * sin(delta_lat/2) + cos(lat1) * cos(lat2) * sin(delta_lon/2) * sin(delta_lon/2);
+    double c = 2 * atan2(std::sqrt(a), std::sqrt(1-a));
+
+    double distance = R * c;
+
+    return distance;
 }
 
 double Graph::pythagorean_distance(Node* node_from, Node* node_to) {
@@ -477,7 +509,7 @@ std::string Graph::print_nodes() {
     for (Node* node : nodes_) {
         if (node != nullptr) {
             // std::cout << "[" << node->longitude << " " << node->longitude << "] ";
-            output += "[" + std::to_string(node->longitude) + " " + std::to_string(node->latitude) + "] ";
+            output += "[" + std::to_string(node->latitude) + " " + std::to_string(node->longitude) + "] ";
         } else {
             // std::cout << "null ";
             output += "null ";
@@ -526,7 +558,13 @@ void Graph::print_all_vars() {
     std::cout << "\npredecessor_\n" << this->print_predecessors() << std::endl;
     std::cout << "\nheuristic_\n" << this->print_heuristic() << std::endl;
     std::cout << "\nfloyd_warshall_\n" << this->print_floyd_warshall() << std::endl;
-    std::cout << "\nnodes_ (longitude, latitude)\n" << this->print_nodes() << std::endl;
+    std::cout << "\nnodes_ (latitude, longitude)\n" << this->print_nodes() << std::endl;
+}
+
+std::string Node::print() const {
+    std::string output;
+    output += std::to_string(this->id) + " " + std::to_string(this->longitude) + " " + std::to_string(this->latitude) + " ";
+    return output;
 }
 
 bool Connection::operator<(const Connection& other) const {
