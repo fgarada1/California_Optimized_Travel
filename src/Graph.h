@@ -38,11 +38,11 @@ class Graph {
     //computes and updates the adjacency matrix for floyd_warshall_ using the floyd warshall's algorithm 
     void compute_floyd_warshall();
 
-    //returns the shortest path as a std::vector<Node*> from node_id1 to node_id2, based on the floyd warshall's algorithm, if no such path exists, returns an empty vector
-    std::vector<Node*> shortest_path_floyd_warshall(unsigned node_id1, unsigned node_id2);
-    std::vector<Node*> shortest_path_floyd_warshall(Node* node1, Node* node2);
+    //returns the shortest path as a std::vector<Node*> from id_from to id_to, based on the floyd warshall's algorithm, if no such path exists, returns an empty vector
+    std::vector<Node*> shortest_path_floyd_warshall(unsigned id_from, unsigned id_to);
+    std::vector<Node*> shortest_path_floyd_warshall(Node* node_from, Node* node_to);
 
-    //returns the shortest path as a std::vector<Node*> from node_id1 to node_id2, based on the dijkstra's algorithm, if no such path exists, returns an empty vector
+    //returns the shortest path as a std::vector<Node*> from id_from to id_to, based on the dijkstra's algorithm, if no such path exists, returns an empty vector
     std::vector<Node*> compute_dijkstra_path(unsigned id_from, unsigned id_to);
     std::vector<Node*> compute_dijkstra_path(Node* node_from, Node* node_to);
 
