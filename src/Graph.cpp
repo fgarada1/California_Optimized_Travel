@@ -433,6 +433,89 @@ std::vector<Node*> Graph::compute_dijkstra_path(Node* node_from, Node* node_to) 
     return compute_dijkstra_path(id_from, id_to);
 }
 
+std::vector<Node*> Graph::compute_astar_path(unsigned id_from, unsigned id_to) {
+    //could combine both of these error messages into one
+    if (id_from >= total_nodes_) {
+        throw std::invalid_argument("id_from:  " + std::to_string(id_from) + " is out of range of total_nodes_: " + std::to_string(total_nodes_));
+    }
+    if (id_to >= total_nodes_) {
+        throw std::invalid_argument("id_to:  " + std::to_string(id_to) + " is out of range of total_nodes_: " + std::to_string(total_nodes_));
+    }
+    std::vector<Connection> output; //not sure if returning an empty vector here is the best option that is available at the moment
+    std::vector<Node*> nodes;
+
+    if (id_to == id_from) {
+        nodes.push_back(nodes_.at(id_from));
+        return nodes;
+    }
+
+    int n = total_nodes_;
+
+    unsigned starting_vertex = id_from;
+
+    std::vector<double> adjacency_list = graph_.at(id_from);
+    std::vector<unsigned> predecessor_list = predecessor_.at(id_from);
+
+    std::vector<Connection> priority_queue;
+    std::vector<bool> visited(total_nodes_, false);
+
+    //add all nodes to the priority queue
+    for (unsigned id_next = 0; id_next < total_nodes_; id_next++) {
+        Connection connection{id_from, id_next, graph_.at(id_from).at(id_next) + heuristic_.at(id_from).at(id_to)};
+        priority_queue.push_back(connection);
+    }
+
+    std::make_heap(priority_queue.begin(), priority_queue.end());
+
+    //repeat n times: (from the cs225 lecture slides for prim's algorithm)
+    for (size_t i = 0; i < total_nodes_; i++) { //for every node in the graph
+        //remove top node from the priority queue, and store it as "top"
+        Connection top = priority_queue.at(0);
+        // std::cout << top.print() << std::endl;
+        visited.at(top.id_to) = true; //and mark top as visited in constant time
+        output.push_back(top);
+        if (top.id_to == id_to) {
+            break; //this is the shortest path as there can't be any negative distances
+        }
+        priority_queue.erase(priority_queue.begin());
+        std::make_heap(priority_queue.begin(), priority_queue.end());
+
+        //go through all of the neighbors of top, not in visited
+        unsigned current_id = top.id_to;
+        // if (!visited.at(current_id)) {
+            for (unsigned id_next = 0; id_next < total_nodes_; id_next++) { //can replace this with adjacency list, currently this traversal is O(n)
+                Connection connection{current_id, id_next, graph_.at(current_id).at(id_next) + heuristic_.at(current_id).at(id_next)};
+                
+                //if loop, update priority if less than connection
+                for (unsigned k = 0; k < priority_queue.size(); k++) {
+                    Connection& check = priority_queue.at(k);
+                    if (check.id_to == id_next) {
+                        if (connection > check) { //operator is flipped to make a min heap
+                            check.id_from = connection.id_from;
+                            check.distance += connection.distance;
+                            std::make_heap(priority_queue.begin(), priority_queue.end());
+                        }
+                        break;
+                    }
+                }
+
+            }
+
+        // }
+
+    }
+
+    for (const Connection& connection : output) {
+        nodes.push_back(nodes_.at(connection.id_to));
+    }
+
+    return nodes;
+}
+
+std::vector<Node*> Graph::compute_astar_path(Node* node_from, Node* node_to) {
+    return compute_dijkstra_path(node_from, node_to);
+}
+
 //getters
 std::vector<std::vector<double>> Graph::get_graph() const { return graph_; }
 std::vector<std::vector<unsigned>> Graph::get_predecessor() const { return predecessor_; }
