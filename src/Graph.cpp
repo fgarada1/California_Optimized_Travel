@@ -8,6 +8,7 @@
 #include <queue>
 #include <set>
 #include <limits>
+#include <algorithm>
 
 Graph::Graph(const std::string& filename_nodes, const std::string& filename_edges, unsigned total_nodes, unsigned total_edges) 
 : graph_(total_nodes, std::vector<double>(total_nodes, std::numeric_limits<double>::max())), 
@@ -304,24 +305,36 @@ std::vector<Node*> Graph::compute_dijkstra_path(unsigned id_from, unsigned id_to
 
     //     PriorityQueue Q // min distance, defined by d[v] 
     //     Q.buildHeap(G.vertices())
-    std::priority_queue<Connection, std::vector<Connection>, std::greater<Connection>> priority_queue;
+    // std::priority_queue<Connection, std::vector<Connection>, std::greater<Connection>> priority_queue;
     std::vector<Connection> priority_queue_array;
     std::set<int> seen;
     // std::vector<double> adjacency_list = graph_.at(id_from);
     seen.insert(id_from);
-    for (unsigned id_next = 0; id_next < total_nodes_; id_next++) { //put adjacency list here when the function has been implemented
-        double distance = graph_.at(id_next).at(id_from);
-        std::cout << "id_from: "  << id_from << " id_next: " << id_next << " distance: " << distance << std::endl;
+    for (unsigned id_next = 0; id_next < total_nodes_; id_next++) {
+        // std::vector<unsigned> adjacency_list = graph_.at(id_from); //adjacency list of id_from, with edges that are not connections
+        double distance = graph_.at(id_from).at(id_next);
+        std::cout << "id_from: "  << id_from << " id_next: " << id_next << " distance: ";
+        if (distance == std::numeric_limits<double>::max()) {
+            std::cout << "max" << std::endl;
+        } else {
+            std::cout << distance << std::endl;
+        }
         Connection connection{id_from, id_next, distance};
         if (id_from != id_next && distance != -1) { //distance check could be adjusted here, distance > 0?
             assert(distance > 0);
-            priority_queue.push(connection);
+            priority_queue_array.push_back(connection);
             std::cout << connection.print() << std::endl;
         } //stop when id_to == id_next
-        priority_queue_array.push_back(connection);
+        // priority_queue.push(connection);
     }
 
-    std::cout << "priority_queue.size() " << priority_queue.size() << std::endl;
+    std::make_heap(priority_queue_array.begin(), priority_queue_array.end(), std::greater<>{});
+
+    std::cout << "is_heap(priority_queue_array.begin(), priority_queue_array.end()) " << is_heap(priority_queue_array.begin(), priority_queue_array.end()) << std::endl;
+
+    // std::cout << "priority_queue.size() " << priority_queue.size() << std::endl;
+    std::cout << "priority_queue_array.size() " << priority_queue_array.size() << std::endl;
+
 
     // while (!priority_queue.empty()) {
     //     std::cout << "top: " << priority_queue.top().print() << std::endl;
@@ -340,27 +353,27 @@ std::vector<Node*> Graph::compute_dijkstra_path(unsigned id_from, unsigned id_to
         std::cout << "seen: " << num << std::endl;
     }
 
-    while (!priority_queue.empty()) { //we have no negative nodes, so this should effectively be the same as "repeat n times" in big O(n) analysis
-        Connection connection = priority_queue.top();
-        priority_queue.pop();
-        output.push_back(nodes_.at(connection.id_to));
-        seen.insert(connection.id_to);
-        if (id_to == connection.id_to) { //this should just be a shortcut to ending the while loop anyway
-            return output;
-        }
+    // while (!priority_queue_array.empty()) { //we have no negative nodes, so this should effectively be the same as "repeat n times" in big O(n) analysis
+        // Connection connection;
+        // // std::pop_heap(priority_queue_array.begin(), priority_queue_array.end());
+        // output.push_back(nodes_.at(connection.id_to));
+        // seen.insert(connection.id_to);
+        // if (id_to == connection.id_to) { //this should just be a shortcut to ending the while loop anyway
+        //     return output;
+        // }
 
-        for (int num : seen) {
-            std::cout << "seen: " << num << std::endl;
-        }
+        // for (int num : seen) {
+        //     std::cout << "seen: " << num << std::endl;
+        // }
 
-        unsigned recent_id_from = connection.id_from;
+        // unsigned recent_id_from = connection.id_from;
 
-        for (auto elem : priority_queue_array) {
-            std::cout << "elem: " << elem.print() << std::endl;
-        }
+        // for (auto elem : priority_queue_array) {
+        //     std::cout << "elem: " << elem.print() << std::endl;
+        // }
 
         // for (unsigned id_next = 0; id_next < total_nodes_; id_next++) { //put adjacency list here when the function has been implemented
-        //     double distance = graph_.at(id_next).at(id_from);
+        //     double distance = graph_.at(id_from).at(id_next);
         //     std::cout << "id_from: "  << id_from << " id_next: " << id_next << " distance: " << distance << std::endl;
         //     if (id_from != id_next && distance != -1) { //distance check could be adjusted here, distance > 0?
         //         assert(distance > 0);
@@ -375,7 +388,7 @@ std::vector<Node*> Graph::compute_dijkstra_path(unsigned id_from, unsigned id_to
 
         //     } //stop when id_to == id_next
         // }
-    }
+    // }
 
     return output;
 }
@@ -495,5 +508,12 @@ bool Connection::operator>(const Connection& other) const {
 }
 
 std::string Connection::print() const {
-    return std::to_string(this->id_from) + " " + std::to_string(this->id_to) + " " + std::to_string(this->distance);
+    std::string output;
+    output += std::to_string(this->id_from) + " " + std::to_string(this->id_to) + " ";
+    if (distance == std::numeric_limits<double>::max()) {
+        output += "max";
+    } else {
+        output += std::to_string(this->distance);
+    }
+    return output;
 }
