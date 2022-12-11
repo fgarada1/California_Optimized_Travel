@@ -30,7 +30,7 @@ If you would like to run tests.cpp, type:
 make test
 ./test
 
-and should show the result of all of the tests in tests.cpp.
+and this should show the result of all of the tests in tests.cpp.
 
 
 
@@ -56,7 +56,7 @@ Dijkstra's:
     std::vector<Node*> compute_dijkstra_path(Node* node_from, Node* node_to); -takes in a node_from and a node_to
 
 A*:
--you must run one of these functions before you can use compute_astar_path
+-you must run one of these functions before you can use compute_astar_path, the default ran in the constructor is pythagorean distance
 -both functions compute the heuristic matrix for use in the A* algorithm, each entry is the geographical distance between col and row, computed using the selected formula
     void compute_heuristic_matrix_haversine();
     void compute_heuristic_matrix_pythagorean_distance();
