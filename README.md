@@ -9,10 +9,14 @@ Our Team Project Proposal, Team Contract, and written report can be found under 
 Code:
 All algorithms can be accessed from main.cpp.
 To first initialize the graph, create a graph object in main.cpp and link the appropriate files as shown:
+
                 nodes.txt          edges.txt     #nodes #edges
+                
 Graph graph("../ol_nodes.txt", "../ol_edges.txt", 6105, 7035); //not supposed to cause an error
 
 If you would like to use different files, keep in mind that the max number of nodes that the computer we used can handle is ~17000 nodes, and the max number of edges was around ~16000.
+
+More test examples can be found under the main directory, and in the more_test folder. (Most of the non example test cases (e.g. "test_edges13.txt") in more_test are designed to fail and are used for testing purposes.)
 
 To run the code, first cd to the folder this project is in and enter: 
 mkdir build
