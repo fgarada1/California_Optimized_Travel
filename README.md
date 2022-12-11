@@ -3,6 +3,9 @@ Given a start and end point in the state of California from the user, we will fi
 
 Note: We were unable to run our code on the inital dataset, so we used a smaller dataset of the city of Oldenburg.
 
+Documents:
+Our Team Project Proposal, Team Contract, and written report can be found under the documents folder.
+
 Code:
 All algorithms can be accessed from main.cpp.
 To first initialize the graph, create a graph object in main.cpp and link the appropriate files as shown:
