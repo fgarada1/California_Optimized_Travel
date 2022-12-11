@@ -1,6 +1,8 @@
 # California_Optimized_Travel
 Given a start and end point in the state of California from the user, we will find the most optimal route to travel the distance between the points using either the amount of roads or the geographical distance, based on user preference.
 
+Note: We were unable to run our code on the inital dataset, so we used a smaller dataset of the city of Oldenburg.
+
 "The README clearly and succintly describes the following:
 The linkage and location of all major code, data, results, and deliverable files.
 
