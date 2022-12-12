@@ -342,6 +342,7 @@ std::vector<Node*> Graph::shortest_path_floyd_warshall(Node* node_from, Node* no
     return shortest_path_floyd_warshall(id_from, id_to);
 }
 
+
 std::vector<Node*> Graph::compute_dijkstra_path(unsigned id_from, unsigned id_to) {
     //could combine both of these error messages into one
     if (id_from >= total_nodes_) {
@@ -378,13 +379,18 @@ std::vector<Node*> Graph::compute_dijkstra_path(unsigned id_from, unsigned id_to
 
     //repeat n times: (from the cs225 lecture slides for prim's algorithm)
     for (size_t i = 0; i < total_nodes_; i++) { //for every node in the graph
+        std::cout << i  << "/" << total_nodes_ << std::endl;
         //remove top node from the priority queue, and store it as "top"
         Connection top = priority_queue.at(0);
         // std::cout << top.print() << std::endl;
         visited.at(top.id_to) = true; //and mark top as visited in constant time
         output.push_back(top);
         if (top.id_to == id_to) {
-            break; //this is the shortest path as there can't be any negative distances
+            // break; //this is the shortest path as there can't be any negative distances
+            for (const Connection& connection : output) {
+                nodes.push_back(nodes_.at(connection.id_to));
+            }
+            return nodes;
         }
         priority_queue.erase(priority_queue.begin());
         std::make_heap(priority_queue.begin(), priority_queue.end());
@@ -421,7 +427,7 @@ std::vector<Node*> Graph::compute_dijkstra_path(unsigned id_from, unsigned id_to
     return nodes;
 }
 
-std::vector<Node*> Graph::compute_dijkstra_path(Node* node_from, Node* node_to) {
+std::vector<Connection> Graph::compute_dijkstra_path(Node* node_from, Node* node_to) {
     if (node_from == nullptr) {
         throw std::invalid_argument("node_from is nullptr");
     }

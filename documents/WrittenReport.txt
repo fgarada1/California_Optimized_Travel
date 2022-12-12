@@ -1,0 +1,39 @@
+Our Original Leading Question:
+What is the most optimal way to get from Point A to Point B in the state of San Francisco, California? Given a pair of endpoints, our algorithm will find the most optimal route between the two destinations. We will optimize based on the amount of roads or the geographical distance between two points depending on what the user chooses. We will use the A* Algorithm in order to find the shortest path between two nodes.
+
+In terms of this goal, we had to make a few changes. First, we changed our dataset to look at the city of Oldenburg, as this city had around 6000 nodes and 7000 edges while the city of San Francisco had around 175000 nodes and 223000 edges, and the California Road Network dataset had around 21000 nodes and 22000 edges, both of which were too large for the computer we were using to handle.
+
+In terms of the algorithms, @ig8 mainly focused on Floyd Warshall's Algorithm, @nithilak mainly focused on the A* algorithm, and @fgara2 wrote the BFS algorithm. 
+
+
+Floyd Warshall's:
+
+-This algorithm had no complications when writing the code. The problem was, it took forever to compile on a large graph.
+
+*insert pic of algorithm here*
+
+Success: Yes, when it loads
+
+Tests: this algorithm was tested using a sample graph https://www.desmos.com/calculator/p1tosprymo with a test case in test.cpp
+
+A*
+
+-This algorithm had many complications when writing the code. It was difficult to figure out how to use std::make_heap for the algorithm, and in the end ended up coding the operator> and operator< in the opposite way to use the default settings for std::make_heap which creates a max heap by default. This could have been changed another way, but this is quick and simple and while it is a bit confusing, it creates functional code. 
+
+-Another difficulty was figuring out how to compute the heuristic, and in the end we left both versions in the code as some of the data used normalized x and y coordinates which would benefit from the pythagorean distance, while other data used latitude and longitude coordinates which would benefit from using the haversine function. But in the end, we decided to use pythagorean distance as the default as it seemed more accurate to the distances given in the nodes.txt files, and in the small scale of one town it's a good enough approximation.
+
+-Finally, the path it returned ended up being much longer than expected for some of the larger examples, and this was hard to debug. But in contrast to Floyd Warshall's, the time to generate the path ended up being one second for every node in the dataset.
+
+*insert pic of algorithm here*
+
+Success: Kind of, it loads and generates a path, but this path could be long and incorrect
+
+Tests: this algorithm was tested using a sample graph https://www.desmos.com/calculator/p1tosprymo with a test case in test.cpp
+
+BFS
+
+-Initially the id_to and id_from were switched in the constructor, making it hard to directly obtain the adjacency list for a node.
+
+*insert pic of algorithm here*
+
+Success: tbd
