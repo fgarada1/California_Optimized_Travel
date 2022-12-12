@@ -61,7 +61,7 @@ Graph::Graph(const std::string& filename_nodes, const std::string& filename_edge
             throw std::invalid_argument("Format 1 read error on line: " + std::to_string(count));
         }
 
-        std::cout << id << " " << latitude << " " << longitude << std::endl;
+        // std::cout << id << " " << latitude << " " << longitude << std::endl;
         unsigned id2 = id; //used to convert from std::string to int previously
         if (count != id2) {
             throw std::invalid_argument("given id: " + std::to_string(id2) + " does not match count: " + std::to_string(count));
@@ -81,12 +81,12 @@ Graph::Graph(const std::string& filename_nodes, const std::string& filename_edge
         Node* node = new Node{id2, latitude_double, longitude_double}; //this guarantees higher precision for the doubles
             //also without new the first Node id wraps around to the max value, it goes wrong somehow, so this is the solution for now
         assert(nodes_.at(id2) == nullptr);
-        // try {
-        //     if (nodes_.at(id2) == nullptr) {
-        //     }
-        // } catch (std::exception& e) {
-        //     throw std::invalid_argument("given id: " + std::to_string(id2) + " does not match count: " + std::to_string(count));
-        // }
+        try {
+            if (nodes_.at(id2) == nullptr) {
+            }
+        } catch (std::exception& e) {
+            throw std::invalid_argument("given id: " + std::to_string(id2) + " does not match count: " + std::to_string(count));
+        }
         nodes_.at(id2) = node;
         
         count++;
@@ -95,7 +95,7 @@ Graph::Graph(const std::string& filename_nodes, const std::string& filename_edge
     std::string test;
     ifs_nodes >> test;
     ifs_nodes >> test;
-    std::cout << test << std::endl;
+    // std::cout << test << std::endl;
     if (!ifs_nodes.eof()) {
         throw std::invalid_argument("total_nodes_ in document 1 does not match the number of nodes provided: "
                                 "document 1 has extra entries on line: " + std::to_string(count));
@@ -160,7 +160,7 @@ Graph::Graph(const std::string& filename_nodes, const std::string& filename_edge
         }
         if (id_from == id_to) {
             throw std::invalid_argument("Self loops are not allowed: id_from: " + std::to_string(id_from) + " and id_to: " + std::to_string(id_from) + " on line: " + std::to_string(count2) + " total_nodes:  " + std::to_string(total_nodes_));
-            }
+        }
         try {
             graph_.at(id_from).at(id_to) = distance_double;
             floyd_warshall_.at(id_from).at(id_to) = distance_double;
@@ -172,7 +172,8 @@ Graph::Graph(const std::string& filename_nodes, const std::string& filename_edge
         }
         count2++;
     }
-    //check if edges txt file has extra lines
+    // std::cout << "done" << std::endl;
+    // check if edges txt file has extra lines
     std::string test2;
     ifs_edges >> test2;
     ifs_edges >> test2;
@@ -184,32 +185,52 @@ Graph::Graph(const std::string& filename_nodes, const std::string& filename_edge
         throw std::invalid_argument("total_edges_ in document 2 does not match the number of edges provided: count2: " 
                              + std::to_string(count2) + " total_edges_: " + std::to_string(total_edges_));
     }
-
-    compute_heuristic_adjacency_matrix();
-    // floyd_warshall_ = graph_; //this is a copy, not a reference to graph_
+    std::cout << "done" << std::endl;
+    // assert(false);
+    compute_heuristic_matrix_pythagorean_distance();
+    floyd_warshall_ = graph_; //this is a copy, not a reference to graph_
 }
 
 Graph::~Graph() {
     // for (unsigned i = 0; i < total_nodes_; i++) {
     //     for (unsigned j = 0; j < total_nodes_; j++) {
     //         delete graph_.at(i).at(j);
+    //         delete floyd_warshall_.at(i).at(j);
     //         delete predecessor_.at(i).at(j);
     //     }
     // }
     for (Node* node : nodes_) {
-       delete node;
+       delete node; //this takes way too much time
     }
 }
 
-void Graph::compute_heuristic_adjacency_matrix() {
+void Graph::compute_heuristic_matrix_haversine() {
     assert(nodes_.size() == total_nodes_);
     assert(heuristic_.size() == total_nodes_);
     assert(graph_.size() == total_nodes_);
     //could assert that each row exists and has size == total_nodes, but this could be unneccessary and make compile time longer
     for (size_t i = 0; i < total_nodes_; i++) {
+        std::cout << i << "/" << total_nodes_ << std::endl;
         for (size_t j = i; j < total_nodes_; j++) {
+            // std::cout << "i: " << i << "/" << total_nodes_ << std::endl;
             // if (graph_.at(i).at(j) != std::numeric_limits<double>::max()) {
-                // double distance = haversine(nodes_.at(i), nodes_.at(j));
+                double distance = haversine(nodes_.at(i), nodes_.at(j));
+                heuristic_.at(i).at(j) = distance;
+                heuristic_.at(j).at(i) = distance;
+            // }
+        }
+    }
+}
+void Graph::compute_heuristic_matrix_pythagorean_distance() {
+    assert(nodes_.size() == total_nodes_);
+    assert(heuristic_.size() == total_nodes_);
+    assert(graph_.size() == total_nodes_);
+    //could assert that each row exists and has size == total_nodes, but this could be unneccessary and make compile time longer
+    for (size_t i = 0; i < total_nodes_; i++) {
+        std::cout << i << "/" << total_nodes_ << std::endl;
+        for (size_t j = i; j < total_nodes_; j++) {
+            // std::cout << "i: " << i << "/" << total_nodes_ << std::endl;
+            // if (graph_.at(i).at(j) != std::numeric_limits<double>::max()) {
                 double distance = pythagorean_distance(nodes_.at(i), nodes_.at(j)); //because the data is given in normalized coordinates
                 heuristic_.at(i).at(j) = distance;
                 heuristic_.at(j).at(i) = distance;
@@ -288,6 +309,7 @@ void Graph::compute_floyd_warshall() {
     //  print_floyd_warshall();
      int n = floyd_warshall_.size();
      for (int k = 0; k < n; k++) {
+        std::cout << k << "/" << total_nodes_ << std::endl;
          for (int i = 0; i < n; i++) {
              for (int j = 0; j < n; j++) {
                  if (floyd_warshall_[i][k] + floyd_warshall_[k][j] < floyd_warshall_[i][j]) {
@@ -341,7 +363,6 @@ std::vector<Node*> Graph::shortest_path_floyd_warshall(Node* node_from, Node* no
     unsigned id_to = node_to->id;
     return shortest_path_floyd_warshall(id_from, id_to);
 }
-
 
 std::vector<Node*> Graph::compute_dijkstra_path(unsigned id_from, unsigned id_to) {
     //could combine both of these error messages into one
@@ -427,7 +448,7 @@ std::vector<Node*> Graph::compute_dijkstra_path(unsigned id_from, unsigned id_to
     return nodes;
 }
 
-std::vector<Connection> Graph::compute_dijkstra_path(Node* node_from, Node* node_to) {
+std::vector<Node*> Graph::compute_dijkstra_path(Node* node_from, Node* node_to) {
     if (node_from == nullptr) {
         throw std::invalid_argument("node_from is nullptr");
     }
@@ -475,6 +496,7 @@ std::vector<Node*> Graph::compute_astar_path(unsigned id_from, unsigned id_to) {
 
     //repeat n times: (from the cs225 lecture slides for prim's algorithm)
     for (size_t i = 0; i < total_nodes_; i++) { //for every node in the graph
+        std::cout << i  << "/" << total_nodes_ << std::endl;
         //remove top node from the priority queue, and store it as "top"
         Connection top = priority_queue.at(0);
         // std::cout << top.print() << std::endl;
