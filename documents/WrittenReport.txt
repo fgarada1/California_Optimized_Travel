@@ -31,9 +31,12 @@ Success: Kind of, it loads and generates a path, but this path could be long and
 Tests: this algorithm was tested using a sample graph https://www.desmos.com/calculator/p1tosprymo with a test case in test.cpp
 
 BFS
+- Due to this algorithm accepting an input in the format of a lattitude, longitude point inputed by the user, we needed to use additional space and time complexity than initially predicted to complete the algorith. Specifically, a map with a lattiude, longitude point as the key and the node ID as the value was created - with O(n) for space complexity, and O(log n) for time complexity. This resulted in the algorithm having total O(n logn) time complexitiy due to O(log n) for the map and O(n) for the node search within the adjacency matrix. Space complexity was also now O(n^3), due to the map being O(n) and the adjacency matrix being O(n^2).
 
--Initially the id_to and id_from were switched in the constructor, making it hard to directly obtain the adjacency list for a node.
+-Regarding the adjacency matrix - initially the id_to and id_from were switched in the constructor, making it hard to directly obtain the adjacency list for a node. Once the adjacency matrix was fixed, this was no longer an issue.
 
 *insert pic of algorithm here*
 
-Success: tbd
+Success: Yes! Given an input point represented by lattitude, longitude and a distance, the bfs algorithm ouputs a list of locations (represented by Nodes) that can be traveled to within the given distance.
+
+Tests: this algorithm had four test cases, ranging from tests of invalid inputs and scenarios to small valid inputs. There was also a test for the main helper function used for this algorithm.
