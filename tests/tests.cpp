@@ -418,3 +418,23 @@ TEST_CASE("TEST_NAME", "[tag]") {
                                                 "\nmax max max max 4 \n";
         REQUIRE(main_graph.print_predecessors() == expected_predecessor_output);
     }
+
+    //check that A* works properly
+    TEST_CASE("A* functions as intended", "[astar]") {
+        Graph main_graph("../more_test/example_nodes4.txt", "../more_test/example_edges4.txt", 5, 4); //not supposed to cause an error
+        auto graph = main_graph.get_graph();
+        unsigned total_nodes = main_graph.get_total_nodes();
+        REQUIRE(graph.size() == total_nodes);
+        for (const std::vector<double>& vect : graph) {
+            REQUIRE(vect.size() == total_nodes);
+            for (double num : vect) {
+                REQUIRE(((num == (-1.0)) || (num >= 0)));
+            }
+        }
+        std::vector<Node*> nodes = main_graph.compute_astar_path(0, 1);
+        std::string expected_output = "0 1.000000 4.000000 "
+                                    "\n2 2.000000 3.000000 "
+                                    "\n1 1.000000 2.000000 \n";
+        REQUIRE(main_graph.print_nodes(nodes) == expected_output);
+
+    }

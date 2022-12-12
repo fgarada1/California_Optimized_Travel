@@ -28,6 +28,8 @@ class Graph {
     std::string print_predecessors();
     //prints the contents of nodes_, for use in the A* algorithm
     std::string print_nodes();
+    //generic 2D print algorithm, for graphs of type std::vector<Node*>
+    std::string print_nodes(const std::vector<Node*>& graph);
     //prints the contents of floyd_warshall_, the result of the floyd warshall's algorithm
     std::string print_floyd_warshall();
     //prints the contents of heuristic_, for use in the A* algorithm
@@ -43,10 +45,13 @@ class Graph {
     std::vector<Node*> shortest_path_floyd_warshall(unsigned id_from, unsigned id_to);
     std::vector<Node*> shortest_path_floyd_warshall(Node* node_from, Node* node_to);
 
-    //returns the shortest path as a std::vector<Node*> from node_from to node_to, based on the dijkstra's algorithm, if no such path exists, returns an empty vector
-    std::vector<Connection> compute_dijkstra_path(unsigned id_from, unsigned id_to);
-    std::vector<Connection> compute_dijkstra_path(Node* node_from, Node* node_to);
+    //returns the shortest path as a std::vector<Node*> from node_from to node_to, based on the dijkstra's algorithm, if no such path exists, returns a vector with only the starting node
+    std::vector<Node*> compute_dijkstra_path(unsigned id_from, unsigned id_to);
+    std::vector<Node*> compute_dijkstra_path(Node* node_from, Node* node_to);
 
+    //returns the shortest path as a std::vector<Node*> from node_from to node_to, based on the A* algorithm, if no such path exists, returns a vector with only the starting node
+    std::vector<Node*> compute_astar_path(unsigned id_from, unsigned id_to);
+    std::vector<Node*> compute_astar_path(Node* node_from, Node* node_to);
 
     //deconstructor for all member variables in the graph, deletes new nodes (if there are any being used in the current graph)
     ~Graph();
@@ -76,7 +81,7 @@ class Graph {
     // //computes and updates the adjacency matrix for floyd_warshall_ using the floyd warshall's algorithm 
     // void compute_floyd_warshall();
 
-    //generic 2D print algorithm, current only works for graphs of type std::vector<std::vector<double>>
+    //generic 2D print algorithm, for graphs of type std::vector<std::vector<double>>
     std::string print(const std::vector<std::vector<double>>& graph);
 
 
