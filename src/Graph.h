@@ -41,7 +41,7 @@ class Graph {
     //computes and updates the adjacency matrix for floyd_warshall_ using the floyd warshall's algorithm 
     void compute_floyd_warshall();
 
-    //returns the shortest path as a std::vector<Node*> from node_from to node_to, based on the floyd warshall's algorithm, if no such path exists, returns an empty vector
+    //returns the shortest path as a std::vector<Node*> from node_from to node_to, based on the floyd warshall's algorithm, if no such path exists, returns a vector with only the starting node
     std::vector<Node*> shortest_path_floyd_warshall(unsigned id_from, unsigned id_to);
     std::vector<Node*> shortest_path_floyd_warshall(Node* node_from, Node* node_to);
 
@@ -66,11 +66,12 @@ class Graph {
     unsigned get_total_nodes() const;
     unsigned get_total_edges() const;
 
+    //computes the heuristic matrix for use in the A* algorithm, each entry is the geographical distance between col and row, computed using the haversine formula
+    void compute_heuristic_matrix_haversine();
+    //computes the heuristic matrix for use in the A* algorithm, each entry is the geographical distance between col and row, computed using the pythagorean theorem
+    void compute_heuristic_matrix_pythagorean_distance();
 
     private:
-
-    //computes the heuristic adjacancy matrix for use in the A* algorithm, each entry is the geographical distance between col and row, computed using the haversine formula
-    void compute_heuristic_adjacency_matrix();
 
     //uses the haversine formula to return the distance between two nodes
     double haversine(Node* node1, Node* node2);
