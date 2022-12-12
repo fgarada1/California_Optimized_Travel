@@ -34,8 +34,7 @@ make
 and that should show the results of main.cpp.
 
 If you would like to run tests.cpp, type:
-make test
-./test
+make test && ./test
 
 and this should show the result of all of the tests in tests.cpp.
 
@@ -73,4 +72,8 @@ A*:
     std::vector<Node*> compute_astar_path(Node* node_from, Node* node_to); -takes in a node_from and a node_to
 
 BFS:
--tbd
+- The function used for getting the bfs traversal is get_bfs(double x, double y, double distance) which takes an input of a lattitude and longitutde that should be from the dataset, as well as a distance. It returns a vector of Nodes which can be traversed within the given distance from the given starting point (excluding the starting point itself). The ID, lattiue, and longitude of these Nodes can be accessed publicly (e.g. i->lattitude). 
+
+- If the user inputs an invalid lattiude and longitude, the function returns an empty list and prints out an error message indicating that the user inputed an invalid lattiude and longitude. If the distance is 0 or negative, the function returns an empty list of Nodes and outputs an error message indidcating the invalid distance. If there are no possible Nodes that can be traveled to within the inputted distance, the function simply returns an empty list.
+
+- The tests for bfs specifically can be run using ./test [bfs]. There are four test cases, two of which test the algorithm against invalid inputs, one which tests for a valid input, and one which tests the bfs helper function. 
