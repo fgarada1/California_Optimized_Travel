@@ -16,6 +16,8 @@ Floyd Warshall's:
 
 Success: Yes, for smaller graphs. For larger graphs, if the graph loads within a reasonable amount of time.
 
+Runtime: O(n^3)
+
 Tests: this algorithm was tested using a sample graph https://www.desmos.com/calculator/p1tosprymo with a test case in test.cpp
 
 A*
@@ -29,6 +31,8 @@ A*
 *insert pic of algorithm here*
 
 Success: Kind of, it loads and generates a path, but this path could be long and incorrect
+
+Runtime: O(n^2)
 
 Tests: this algorithm was tested using a sample graph https://www.desmos.com/calculator/p1tosprymo with a test case in test.cpp
 
@@ -45,6 +49,8 @@ Once the adjacency matrix was fixed, this was no longer an issue.
 
 Success: Yes. Given an input point represented by lattitude, longitude and a distance, the BFS algorithm ouputs a list of locations (represented by nodes) that can
 be traveled to within the given distance.
+
+Runtime: Target = O(n) Actual = O(n^2) to access each node id
 
 Tests: this algorithm had four test cases, ranging from tests of invalid inputs and scenarios to small valid inputs. There was also a test for the main helper
 function used for this algorithm.
