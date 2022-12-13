@@ -22,7 +22,7 @@ the adjacency matrix more efficient.
 
 Success: Yes, for smaller graphs. For larger graphs, if the graph loads within a reasonable amount of time.
 
-Runtime: O(n^3)
+Runtime: O(n^3), Space: O(n^2)
 
 Tests: this algorithm was tested using a sample graph https://www.desmos.com/calculator/p1tosprymo with a test case in test.cpp
 
@@ -44,7 +44,7 @@ Warshall's, the time to generate the path ended up being one second for every no
 
 Success: Kind of, it loads and generates a path, but this path could be long and incorrect
 
-Runtime: O(n^2)
+Runtime: O(n^2), Space: O(n^2)
 
 Tests: this algorithm was tested using a sample graph https://www.desmos.com/calculator/p1tosprymo with a test case in test.cpp
 
