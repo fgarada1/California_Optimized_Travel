@@ -26,8 +26,23 @@ make
 ```
 If you only want to make main, then add ``` main ``` at the end of the command, and ```test``` for tests. 
 
+Run ```./main``` to start using the program via the command line. 
 
-Contraints on files:
+#### Command Line Interface
+The first prompt asks the user whether or not they want to use an example graph. Entering ```1``` will lead to a sample dataset being used. Otherwise, follow instructions given and enter the file path for the nodes, the number of nodes, file path for the edges, and number of edges[^2]. 
+
+Once the graph is created, you will be prompted to choose an algorithm.
+
+If using BFS (```0```), you will be prompted to enter the longitude and latitude for a node, followed by the desired distance.
+
+For A* (```1```), you have the choice of using the either the Pythagorean heuristic (default) or the Haversine heuristic. Once you choose the heuristic, enter the starting node id, then the ending node id. 
+
+For Floyd-Warshall (```2```), you do not have to enter any additional inputs. 
+
+After you run the desired algorithm, you have the choice to view all the variables such as the graph, predecessors, nodes, heuristic, and Floyd-Warshall.  
+
+
+[^2]: Contraints on files:
 If you would like to use different files, keep in mind that the max number of nodes that the computer we used can handle is ~17000 nodes, and the max number of edges was around ~16000.
 
 ### Test Suite
