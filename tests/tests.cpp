@@ -346,7 +346,7 @@ TEST_CASE("TEST_NAME", "[tag]") {
                                         "\n1.414214 1.414214 0.000000 2.236068 2.236068 "
                                         "\n3.000000 1.000000 2.236068 0.000000 2.000000 "
                                         "\n3.605551 2.236068 2.236068 2.000000 0.000000 \n";
-                                        
+        main_graph.compute_heuristic_matrix_pythagorean_distance();
         REQUIRE(main_graph.print_heuristic() == expected_output);
     }
     TEST_CASE("check that nodes_ is initializated correctly", "[constructor]") {
@@ -457,6 +457,7 @@ TEST_CASE("BFS_4: bfs helper valid test", "[bfs]") {
         Graph main_graph("../more_test/example_nodes4.txt", "../more_test/example_edges4.txt", 5, 4); //not supposed to cause an error
         auto graph = main_graph.get_graph();
         unsigned total_nodes = main_graph.get_total_nodes();
+        main_graph.compute_heuristic_matrix_pythagorean_distance();
         REQUIRE(graph.size() == total_nodes);
         for (const std::vector<double>& vect : graph) {
             REQUIRE(vect.size() == total_nodes);
@@ -469,6 +470,9 @@ TEST_CASE("BFS_4: bfs helper valid test", "[bfs]") {
                                     "\n2 2.000000 3.000000 "
                                     "\n1 1.000000 2.000000 \n";
         REQUIRE(main_graph.print_nodes(nodes) == expected_output);
+        main_graph.compute_heuristic_matrix_haversine();
+        std::vector<Node*> nodes_2 = main_graph.compute_astar_path(0, 1);
+        REQUIRE(main_graph.print_nodes(nodes_2) == expected_output);
 
     }
 
