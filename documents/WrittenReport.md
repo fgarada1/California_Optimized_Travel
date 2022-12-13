@@ -18,7 +18,7 @@ was difficult, but once that part was finished, the algorithm itself was not too
 - Another issue that we ran into was the amount of time it took to compile on a large graph, which is something we attempted to fix by making the constructor for
 the adjacency matrix more efficient.
 
-![Graph Image](documents/graphs/floyd-warshall)
+![Graph Image](graphs/floyd-warshall)
 
 Success: Yes, for smaller graphs. For larger graphs, if the graph loads within a reasonable amount of time.
 
@@ -40,7 +40,7 @@ small scale of one town it's a good enough approximation.
 - Finally, the path it returned ended up being much longer than expected for some of the larger examples, and this was hard to debug. But in contrast to Floyd
 Warshall's, the time to generate the path ended up being one second for every node in the dataset.
 
-![Graph Image](documents/graphs/astar)
+![Graph Image](graphs/astar)
 
 Success: Kind of, it loads and generates a path, but this path could be long and incorrect
 
@@ -57,7 +57,7 @@ O(n) for the node search within the adjacency matrix. Space complexity was also 
 - Regarding the adjacency matrix - initially the id_to and id_from were switched in the constructor, making it hard to directly obtain the adjacency list for a node.
 Once the adjacency matrix was fixed, this was no longer an issue.
 
-![Graph Image](documents/graphs/bfs)
+![Graph Image](graphs/bfs)
 
 Success: Yes. Given an input point represented by lattitude, longitude and a distance, the BFS algorithm ouputs a list of locations (represented by nodes) that can
 be traveled to within the given distance.
