@@ -42,17 +42,8 @@ class Graph {
     //computes and updates the adjacency matrix for floyd_warshall_ using the floyd warshall's algorithm 
     void compute_floyd_warshall();
 
-    //returns the shortest path as a std::vector<Node*> from node_from to node_to, based on the floyd warshall's algorithm, if no such path exists, returns a vector with only the starting node
-    std::vector<Node*> shortest_path_floyd_warshall(unsigned id_from, unsigned id_to);
-    std::vector<Node*> shortest_path_floyd_warshall(Node* node_from, Node* node_to);
-
-    //returns the shortest path as a std::vector<Node*> from node_from to node_to, based on the dijkstra's algorithm, if no such path exists, returns a vector with only the starting node
-    std::vector<Node*> compute_dijkstra_path(unsigned id_from, unsigned id_to);
-    std::vector<Node*> compute_dijkstra_path(Node* node_from, Node* node_to);
-
     //returns the shortest path as a std::vector<Node*> from node_from to node_to, based on the A* algorithm, if no such path exists, returns a vector with only the starting node
     std::vector<Node*> compute_astar_path(unsigned id_from, unsigned id_to);
-    std::vector<Node*> compute_astar_path(Node* node_from, Node* node_to);
 
     //deconstructor for all member variables in the graph, deletes new nodes (if there are any being used in the current graph)
     ~Graph();
