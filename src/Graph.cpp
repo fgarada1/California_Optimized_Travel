@@ -94,7 +94,6 @@ Graph::Graph(const std::string& filename_nodes, const std::string& filename_edge
     std::string test;
     ifs_nodes >> test;
     ifs_nodes >> test;
-    // std::cout << test << std::endl;
     if (!ifs_nodes.eof()) {
         throw std::invalid_argument("total_nodes_ in document 1 does not match the number of nodes provided: "
                                 "document 1 has extra entries on line: " + std::to_string(count));
@@ -103,7 +102,6 @@ Graph::Graph(const std::string& filename_nodes, const std::string& filename_edge
         throw std::invalid_argument("total_nodes_ in document 1 does not match the number of nodes provided: count: " 
                              + std::to_string(count) + " total_nodes_: " + std::to_string(total_nodes_));
     }
-
 
     //read edges
     std::cout << "edges" << std::endl;
@@ -472,4 +470,59 @@ std::string Connection::print() const {
         output += std::to_string(this->distance);
     }
     return output;
+}
+
+
+void Graph::createCoordinateMap() { // maps pairs of lattitude and logititudes to node id
+    for (auto& i : nodes_) coord_to_node_[make_pair(i->latitude, i->longitude)] = i->id;
+}
+
+std::vector<Node*> Graph::get_bfs(double x, double y, double distance) {
+    // ensure valid start id input, by checking if its in map
+    unsigned id = 0;
+    vector<Node*> ans;
+
+    if (distance <= 0) {
+        cout << "ERROR: invalid distance, is 0 or negative" << endl;
+        return vector<Node*>();
+    }
+
+    try {
+        id = coord_to_node_.at(make_pair(x,y));
+    } catch (std::exception& e) {
+        // not found in map
+        cout << "ERROR: invalid lattitude and longitude pair input" << endl;
+        return ans; 
+    }
+
+    vector<unsigned> valid_nodes = bfs_helper(id, distance);
+
+    for (auto& i : valid_nodes) {
+        // node id should be same as the node's index in the vector (ensured when constructing nodes vector)
+        if (nodes_.at(i)->id == i) {
+            ans.push_back(nodes_.at(i));
+        } else {
+            cout << "ERROR: Node vector ID doesn't match index in vector (see constructor)" << endl;
+            return vector<Node*>();
+        }
+    }
+
+    return ans;
+
+}
+
+std::vector<unsigned> Graph::bfs_helper(unsigned start_id, double distance) {
+    try {
+        graph_.at(start_id); 
+    } catch (exception& e) {
+        cout << "ERROR: invalid start id in bfs helper" << endl;
+    }
+
+    vector<unsigned> ans;
+    for (unsigned i = 0; i < graph_.at(start_id).size(); i++) {
+        if (i == start_id) continue;
+        if (graph_.at(start_id).at(i) <= distance) ans.push_back(i);
+    }
+    return ans;
+
 }
