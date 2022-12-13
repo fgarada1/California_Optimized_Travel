@@ -372,6 +372,39 @@ TEST_CASE("TEST_NAME", "[tag]") {
 //- A* + heuristic check (none are null)
 //- Floyd Warshall's
 
+
+TEST_CASE("BFS_1: small input", "[bfs]") {
+    Graph test("../test_nodes.txt", "../test_edges.txt", 11, 11);
+    std::vector<Node*> out = test.get_bfs(-121.904167, 41.974556, .006);
+    
+    std::vector<Node*> ans = {test.get_nodes().at(1), test.get_nodes().at(6)};
+    REQUIRE(out == ans);
+}
+
+TEST_CASE("BFS_2: invalid input", "[bfs]") {
+    Graph test("../test_nodes.txt", "../test_edges.txt", 11, 11);
+    // invalid input pair, but valid distance
+    std::vector<Node*> out = test.get_bfs(90, 4, .006);
+    REQUIRE(out == std::vector<Node*>());
+}
+
+TEST_CASE("BFS_3: invalid, distance too small", "[bfs]") {
+    Graph test("../test_nodes.txt", "../test_edges.txt", 11, 11);
+    // valid input pair, but too small distance
+    std::vector<Node*> out = test.get_bfs(-121.904167, 41.974556, .0000006);
+    REQUIRE(out == std::vector<Node*>());
+}
+
+TEST_CASE("BFS_4: bfs helper valid test", "[bfs]") {
+    Graph test("../test_nodes.txt", "../test_edges.txt", 11, 11);
+    // valid input pair, but too small distance
+    std::vector<unsigned> out = test.bfs_helper(0, .006);
+    std::vector<unsigned> ans = {1, 6};
+
+    REQUIRE(out == ans);
+}
+
+
     //check that floyd_walrshall works properly
     TEST_CASE("floyd_warshall functions as intended", "[floyd_walker]") {
         Graph main_graph("../more_test/example_nodes4.txt", "../more_test/example_edges4.txt", 5, 4); //not supposed to cause an error
@@ -438,3 +471,4 @@ TEST_CASE("TEST_NAME", "[tag]") {
         REQUIRE(main_graph.print_nodes(nodes) == expected_output);
 
     }
+

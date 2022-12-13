@@ -12,6 +12,8 @@
 #include <numbers>
 #include <math.h>
 
+using namespace std;
+
 Graph::Graph(const std::string& filename_nodes, const std::string& filename_edges, unsigned total_nodes, unsigned total_edges) 
 : graph_(total_nodes, std::vector<double>(total_nodes, std::numeric_limits<double>::max())), 
     predecessor_(total_nodes, std::vector<unsigned>(total_nodes, std::numeric_limits<unsigned>::max())), //change to int if it makes sense to do so
@@ -189,6 +191,7 @@ Graph::Graph(const std::string& filename_nodes, const std::string& filename_edge
     // assert(false);
     compute_heuristic_matrix_pythagorean_distance();
     floyd_warshall_ = graph_; //this is a copy, not a reference to graph_
+    createCoordinateMap();
 }
 
 Graph::~Graph() {
@@ -397,6 +400,7 @@ std::vector<Node*> Graph::compute_dijkstra_path(unsigned id_from, unsigned id_to
     }
 
     std::make_heap(priority_queue.begin(), priority_queue.end());
+
 
     //repeat n times: (from the cs225 lecture slides for prim's algorithm)
     for (size_t i = 0; i < total_nodes_; i++) { //for every node in the graph
@@ -678,4 +682,59 @@ std::string Connection::print() const {
         output += std::to_string(this->distance);
     }
     return output;
+
+}
+
+void Graph::createCoordinateMap() { // maps pairs of lattitude and logititudes to node id
+    for (auto& i : nodes_) coord_to_node_[make_pair(i->latitude, i->longitude)] = i->id;
+}
+
+std::vector<Node*> Graph::get_bfs(double x, double y, double distance) {
+    // ensure valid start id input, by checking if its in map
+    unsigned id = 0;
+    vector<Node*> ans;
+
+    if (distance <= 0) {
+        cout << "ERROR: invalid distance, is 0 or negative" << endl;
+        return vector<Node*>();
+    }
+
+    try {
+        id = coord_to_node_.at(make_pair(x,y));
+    } catch (std::exception& e) {
+        // not found in map
+        cout << "ERROR: invalid lattitude and longitude pair input" << endl;
+        return ans; 
+    }
+
+    vector<unsigned> valid_nodes = bfs_helper(id, distance);
+
+    for (auto& i : valid_nodes) {
+        // node id should be same as the node's index in the vector (ensured when constructing nodes vector)
+        if (nodes_.at(i)->id == i) {
+            ans.push_back(nodes_.at(i));
+        } else {
+            cout << "ERROR: Node vector ID doesn't match index in vector (see constructor)" << endl;
+            return vector<Node*>();
+        }
+    }
+
+    return ans;
+
+}
+
+std::vector<unsigned> Graph::bfs_helper(unsigned start_id, double distance) {
+    try {
+        graph_.at(start_id); 
+    } catch (exception& e) {
+        cout << "ERROR: invalid start id in bfs helper" << endl;
+    }
+
+    vector<unsigned> ans;
+    for (unsigned i = 0; i < graph_.at(start_id).size(); i++) {
+        if (i == start_id) continue;
+        if (graph_.at(start_id).at(i) <= distance) ans.push_back(i);
+    }
+    return ans;
+
 }

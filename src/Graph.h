@@ -1,6 +1,7 @@
 #include <vector>
 #include <string>
 #include <map>
+#include <algorithm>
 
 struct Node {
     unsigned id;
@@ -62,6 +63,7 @@ class Graph {
     std::vector<std::vector<double>> get_floyd_warshall() const;
     std::vector<std::vector<double>> get_heuristic() const;
     std::vector<Node*> get_nodes() const; //not really const?
+    std::vector<Node*> get_bfs(double x, double y, double distance);
 
     unsigned get_total_nodes() const;
     unsigned get_total_edges() const;
@@ -71,7 +73,11 @@ class Graph {
     //computes the heuristic matrix for use in the A* algorithm, each entry is the geographical distance between col and row, computed using the pythagorean theorem
     void compute_heuristic_matrix_pythagorean_distance();
 
+    std::vector<unsigned> bfs_helper(unsigned start_id, double distance);
+
+
     private:
+
 
     //uses the haversine formula to return the distance between two nodes
     double haversine(Node* node1, Node* node2);
@@ -96,7 +102,8 @@ class Graph {
 
     //vector (of nodes)
     std::vector<Node*> nodes_; //vector of nodes stored to calculate the heuristic storing adjacency matrix for the A* algorithm
-
+    void createCoordinateMap();
+    std::map<std::pair<double, double>, unsigned> coord_to_node_; // used for bfs traversal - key is the x,y coordinate and val is node id. Should be essentially same as node vect
     unsigned total_nodes_;
     unsigned total_edges_;
 };
