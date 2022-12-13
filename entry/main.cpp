@@ -51,7 +51,24 @@ int main() {
     std::cin >> input2;
 
     if (input2 == 0) {
-        //run bfs
+        double x;
+        double y; 
+        double distance;
+
+        std::cout << "Enter latitude: " << std::endl;
+
+        std::cin >> x;
+
+        std::cout << "Enter longitude: " << std::endl;
+
+        std::cin >> y;
+
+        std::cout << "Enter maximum distance from the point: " << std::endl;
+
+        std::cin >> distance;
+
+        graph.get_bfs(x, y, distance);
+
     } else if (input2 == 1) {
         bool input3 = true;
         std::cout << "Default heuristic?: Type 1 -> Yes, Type 0 -> No " << std::endl;
@@ -96,5 +113,6 @@ int main() {
     if (input5) {
         graph.print_all_vars();
     }
+
 
 }
