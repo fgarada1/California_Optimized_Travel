@@ -75,7 +75,9 @@ class Graph {
 
     std::vector<unsigned> bfs_helper(unsigned start_id, double distance);
 
+
     private:
+
 
     //uses the haversine formula to return the distance between two nodes
     double haversine(Node* node1, Node* node2);

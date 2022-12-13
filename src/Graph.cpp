@@ -5,6 +5,12 @@
 #include <stdexcept>
 #include <sstream>
 #include <cmath>
+#include <queue>
+#include <set>
+#include <limits>
+#include <algorithm>
+#include <numbers>
+#include <math.h>
 
 using namespace std;
 
@@ -395,6 +401,7 @@ std::vector<Node*> Graph::compute_dijkstra_path(unsigned id_from, unsigned id_to
 
     std::make_heap(priority_queue.begin(), priority_queue.end());
 
+
     //repeat n times: (from the cs225 lecture slides for prim's algorithm)
     for (size_t i = 0; i < total_nodes_; i++) { //for every node in the graph
         std::cout << i  << "/" << total_nodes_ << std::endl;
@@ -675,6 +682,7 @@ std::string Connection::print() const {
         output += std::to_string(this->distance);
     }
     return output;
+
 }
 
 void Graph::createCoordinateMap() { // maps pairs of lattitude and logititudes to node id
@@ -728,4 +736,5 @@ std::vector<unsigned> Graph::bfs_helper(unsigned start_id, double distance) {
         if (graph_.at(start_id).at(i) <= distance) ans.push_back(i);
     }
     return ans;
+
 }
