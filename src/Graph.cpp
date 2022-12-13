@@ -183,6 +183,7 @@ Graph::Graph(const std::string& filename_nodes, const std::string& filename_edge
     }
     std::cout << "done" << std::endl;
     floyd_warshall_ = graph_; //this is a copy, not a reference to graph_
+    createCoordinateMap();
 }
 
 Graph::~Graph() {
