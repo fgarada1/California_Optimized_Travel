@@ -28,8 +28,7 @@ Then enter:
 cmake ..
 
 Now, you are ready to run the code. Each time you make changes to main (or any other part of the code), type:
-make
-./main
+make && ./main
 
 and that should show the results of main.cpp.
 
